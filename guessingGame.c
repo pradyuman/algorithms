@@ -19,7 +19,6 @@ int main(int argc, char * argv[]){
 //Function definition
 unsigned guess(unsigned lower_bound, unsigned upper_bound, unsigned size){
     char response;
-    int ans;
 
     if (size == 1) {
         return lower_bound + 1;

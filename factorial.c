@@ -5,7 +5,6 @@
 //Function declaration
 unsigned factorial(unsigned num);
 
-
 //Main
 int main(int argc, char * argv[]){
     int ans, sum;
@@ -17,8 +16,10 @@ int main(int argc, char * argv[]){
 
 //Function definition
 unsigned factorial(unsigned num){
-    if (num == 1){
+    //Base case
+	if (num == 1){
         return 1;
     }
+	//Calculating factorial
     return num * factorial(num - 1);
 }

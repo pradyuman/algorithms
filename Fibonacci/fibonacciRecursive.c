@@ -34,6 +34,6 @@ unsigned long fib(unsigned long num){
         return 1;
     }
     else {
-        return fib(num - 1) + fib (num - 2);
+        return fib(num - 1) + fib(num - 2);
     }
 }

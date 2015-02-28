@@ -2,13 +2,14 @@
 clear   % clears all variables and functions from the workspace
 clc     % clears the command window
 
-% --- INPUTS ---
 %Will remove the outer ring of the matrix for final output so that extra work
 %is not needed for corners/edges
+
+%Creating the dimensions for the map
 m = randi([4,10]); %x axis, m-2 = size
 n = randi([4,10]); % y axis, n-2 = size
 
-%Can take input from a user if wanted
+%Can take input from a user if wanted (for dimensions)
 %To use: Uncomment the next 4 lines of code and comment out the code before this.
 
 %m = input('Enter m: ');

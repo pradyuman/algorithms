@@ -110,7 +110,7 @@ double **Invert_matrix(double **data, int size)
          inverse[pivot][j] = rightState;
       }
       
-      //Divide rows by the current value which should be the highest based on the row operations
+      //Divide column elements by the current value which should be the highest based on the row operations
       int currState = data[i][i];
       for(j = 0; j < size ; j++) {
          data[i][j] /= currState;
@@ -134,6 +134,7 @@ double **Invert_matrix(double **data, int size)
       }
       
    }
+   
    deallocateSpace(data, size);
    return inverse;
 }

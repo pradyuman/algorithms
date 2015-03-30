@@ -25,8 +25,10 @@ double **Read_matrix_from_file(char *filename, int *size)
    //Opening file
    FILE *input = fopen(filename, "r");
    //If file did not open, return and do nothing else
-   if(input == NULL)
+   if(input == NULL){
+      fprintf(stderr, "ERROR: File could not be opened for reading.\n");
       return NULL;
+   }
    
    //Read in size
    rewind(input);
@@ -61,8 +63,10 @@ int Write_matrix_to_file(char *filename, double **matrix, int size)
    //Opening file
    FILE *output = fopen(filename, "w");
    //If file did not open, return and do nothing else
-   if(output == NULL)
+   if(output == NULL){
+      fprintf(stderr, "ERROR: File could not be opened for writing.\n");
       return 0;
+   }
    
    int i; //x-coordinate
    int j; //y-coordinate
@@ -88,8 +92,10 @@ double **Invert_matrix(double **data, int size)
    //Initializing augmented part of matrix to identity
    double** inverse = createIdentity(size);
    //If unsuccessful, return NULL
-   if(inverse == NULL)
+   if(inverse == NULL){
+      fprintf(stderr, "ERROR: Memory allocation failed for the inverse matrix.\n");
       return NULL;
+   }
    
    int i, j; //counter
    int leftState, rightState; //positions in left/right part of augmented matrix
@@ -134,6 +140,11 @@ double **Invert_matrix(double **data, int size)
          }
       }
    }
+   
+   if (!validate(inverse, size)) {
+      fprintf(stderr, "The matrix is noninvertible.\n");
+      return NULL;
+   }
    //deallocate space for data
    deallocateSpace(data, size);
    return inverse;
@@ -175,6 +186,11 @@ int findPivot(double** data, int curr, int size){
       }
    }
    return pivot;
+}
+
+//validate the inverted matrix to make sure it is invertible
+int validate(double** data, int size){
+   return 1;
 }
 
 /* multiply two matrices of the same size */

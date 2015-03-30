@@ -5,7 +5,7 @@
 
 //Main
 int main(int argc, char** argv){
-   int size; //Variable that will store the size
+   int size, i, j; //Variable that will store the size
    double** data; //Matrix that will store data from file
    double** invert; //Matrix that will store inverted matrix
    
@@ -15,20 +15,28 @@ int main(int argc, char** argv){
       //Inverting that data
       invert = Invert_matrix(data, size);
       
-      //If the inversion was successful, write to file
-      if (invert != NULL) {
-         int sof = Write_matrix_to_file(argv[3], data, size);
-         //If the wrte-to-file failed, print error
-         if(sof == 0){
-            fprintf(stderr, "Writing to the file failed\n");
-            return(EXIT_FAILURE);
+      for (i = 0; i <size; i++) {
+         for (j = 0; j < size; j++) {
+            printf("%3.6f ", invert[i][j]);
          }
+         printf("\n");
       }
+      
       //If the inversion was not successful, print error
-      else {
+      if (invert == NULL) {
          fprintf(stderr, "ERROR: The inversion failed.\n");
          return(EXIT_FAILURE);
       }
+      
+      //Testing
+      int sof = Write_matrix_to_file(argv[3], invert, size);
+      
+      //If the wrte-to-file failed, print error
+      if(sof == 0){
+         fprintf(stderr, "Writing to the file failed\n");
+         return(EXIT_FAILURE);
+      }
+   
       //deallocate the inverted matrix
       deallocateSpace(invert, size);
    }

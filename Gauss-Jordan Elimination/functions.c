@@ -133,7 +133,6 @@ double **Invert_matrix(double **data, int size)
             j++;
          }
       }
-      
    }
    //deallocate space for data
    deallocateSpace(data, size);

@@ -123,6 +123,7 @@ double **Invert_matrix(double **data, int size)
          if (j == i) {
             j++;
          }
+         //Now that the upper row has a '1', subtract the lower row with a multiple of that row to get more zeroes
          else {
             float state = data[j][i];
             for(k = 0; k < size; k++){
@@ -134,7 +135,7 @@ double **Invert_matrix(double **data, int size)
       }
       
    }
-   
+   //deallocate space for data
    deallocateSpace(data, size);
    return inverse;
 }
@@ -174,7 +175,6 @@ int findPivot(double** data, int curr, int size){
          state = data[i][curr];
       }
    }
-   printf("%d\n", pivot);
    return pivot;
 }
 

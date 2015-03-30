@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "pa_answer03.h"
+#include "functions.h"
 
 /* check whether a value is sufficiently small */
 /* to be considered 0 */

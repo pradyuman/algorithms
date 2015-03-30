@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "pa_answer03.h"
+#include "functions.h"
 
 //Main
 int main(int argc, char** argv){

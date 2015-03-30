@@ -53,7 +53,4 @@ double** createIdentity(int size);
 //Find pivot
 int findPivot(double** data, int curr, int size);
 
-//Validate matrix
-int validate(double** data, int size);
-
 #endif

@@ -15,17 +15,17 @@ int main(int argc, char** argv){
       //Inverting that data
       invert = Invert_matrix(data, size);
       
+      //If the inversion was not successful, print error
+      if (invert == NULL) {
+         fprintf(stderr, "ERROR: The inversion failed.\n");
+         return(EXIT_FAILURE);
+      }
+      
       for (i = 0; i <size; i++) {
          for (j = 0; j < size; j++) {
             printf("%3.6f ", invert[i][j]);
          }
          printf("\n");
-      }
-      
-      //If the inversion was not successful, print error
-      if (invert == NULL) {
-         fprintf(stderr, "ERROR: The inversion failed.\n");
-         return(EXIT_FAILURE);
       }
       
       //Testing

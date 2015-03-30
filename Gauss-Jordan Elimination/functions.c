@@ -98,11 +98,25 @@ double **Invert_matrix(double **data, int size)
    }
    
    int i, j; //counter
+   
+   printf("--DATA--\n");
+   for (i = 0; i <size; i++) {
+      for (j = 0; j < size; j++) {
+         printf("%3.6f ", data[i][j]);
+      }
+      printf("\n");
+   }
+   
    int leftState, rightState; //positions in left/right part of augmented matrix
    for(i = 0; i < size; i++){
       //get pivot row
       int pivot = findPivot(data, i, size);
+      if(Is_zero(data[pivot][i])){
+         fprintf(stderr, "The matrix is noninvertible.\n");
+         return NULL;
+      }
       
+      //int valid = 1;
       //Swapping rows based on pivot
       for(j = 0; j < size; j++) {
          //swap rows on left side
@@ -140,11 +154,14 @@ double **Invert_matrix(double **data, int size)
          }
       }
    }
-   
-   if (!validate(inverse, size)) {
-      fprintf(stderr, "The matrix is noninvertible.\n");
-      return NULL;
+   printf("--DATA--\n");
+   for (i = 0; i <size; i++) {
+      for (j = 0; j < size; j++) {
+         printf("%3.6f ", data[i][j]);
+      }
+      printf("\n");
    }
+   
    //deallocate space for data
    deallocateSpace(data, size);
    return inverse;
@@ -185,12 +202,8 @@ int findPivot(double** data, int curr, int size){
          state = data[i][curr];
       }
    }
+   
    return pivot;
-}
-
-//validate the inverted matrix to make sure it is invertible
-int validate(double** data, int size){
-   return 1;
 }
 
 /* multiply two matrices of the same size */
@@ -218,7 +231,7 @@ double ** allocateSpace(int size)
    
    //Checking to see if memory allocation was successful
    if (data == 0) {
-      printf("ERROR: Memory allocation unsuccessful.\n");
+      fprintf(stderr, "ERROR: Memory allocation unsuccessful.\n");
       deallocateSpace(data,0);
       return NULL;
    }
@@ -228,7 +241,7 @@ double ** allocateSpace(int size)
    for (row = 0; row < size; row++) {
       data[row] = (double *)malloc(size * sizeof(double));
       if (data[row] == 0) {
-         printf("ERROR: Memory allocation unsuccessful.\n");
+         fprintf(stderr, "ERROR: Memory allocation unsuccessful.\n");
          deallocateSpace(data, size);
          return NULL;
       }

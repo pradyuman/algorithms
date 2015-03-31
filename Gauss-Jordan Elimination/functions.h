@@ -1,13 +1,6 @@
 #ifndef PA_ANSWER03_H
 #define PA_ANSWER03_H
 
-/* add your function declarations after this line */
-
-
-/* add your function declarations before this line */
-
-/* do not change anything after this line */
-
 /* define what is small enough to be considered 0 */
 
 #define TOL 1e-10
@@ -38,8 +31,6 @@ double **Matrix_matrix_multiply(double **matrixa, double **matrixb, int size);
 /* entries of an identity matrix of the same size */
 
 double Deviation_from_identity(double **matrix, int size);
-
-/* do not change anything before this line */
 
 //Allocate space
 double** allocateSpace(int size);

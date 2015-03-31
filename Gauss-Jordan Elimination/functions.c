@@ -25,7 +25,7 @@ double **Read_matrix_from_file(char *filename, int *size)
    //Opening file
    FILE *input = fopen(filename, "r");
    //If file did not open, return and do nothing else
-   if(input == NULL){
+   if(input == NULL) {
       fprintf(stderr, "ERROR: File could not be opened for reading.\n");
       return NULL;
    }
@@ -106,17 +106,29 @@ double **Invert_matrix(double **data, int size)
       }
       printf("\n");
    }
-   
+   int pivot;
+   float lower;
+   float current;
    int leftState, rightState; //positions in left/right part of augmented matrix
    for(i = 0; i < size; i++){
+      pivot = i;
       //get pivot row
-      int pivot = findPivot(data, i, size);
+      for (j = i + 1; j < size; j++) {
+         lower = data[j - 1][i];
+         current = data[j][i];
+         lower = lower > 0 ? lower : -1 * lower;
+         current = current > 0 ? current: -1 * current;
+         //printf("%f %f\n", lower, current);
+         if (current > lower) {
+            pivot = j;
+         }
+      }
+      printf("%d %f\n", pivot, data[pivot][i]);
       if(Is_zero(data[pivot][i])){
          fprintf(stderr, "The matrix is noninvertible.\n");
          return NULL;
       }
       
-      //int valid = 1;
       //Swapping rows based on pivot
       for(j = 0; j < size; j++) {
          //swap rows on left side
@@ -154,13 +166,6 @@ double **Invert_matrix(double **data, int size)
          }
       }
    }
-   printf("--DATA--\n");
-   for (i = 0; i <size; i++) {
-      for (j = 0; j < size; j++) {
-         printf("%3.6f ", data[i][j]);
-      }
-      printf("\n");
-   }
    
    //deallocate space for data
    deallocateSpace(data, size);
@@ -180,30 +185,6 @@ double **createIdentity(int size){
 	}
    
    return identity;
-}
-
-//Find pivot
-int findPivot(double** data, int curr, int size){
-   //current value of matrix
-   float state = data[curr][curr];
-   //Will check the value right underneath current value
-   float lower = 0;
-   //return value
-   int pivot;
-   int i; //counter
-   //current + 1 to make sure we don't go beyond the bounds (also want to compare value underneath to current)
-   for(i = curr + 1; i < size; i++){
-      //absolute value
-      lower = data[i][curr] > 0 ? data[i][curr] : -1 * data[i][curr];
-      state = state > 0 ?: -1 * data[curr][curr];
-      
-      if(lower > state){
-         pivot = i;
-         state = data[i][curr];
-      }
-   }
-   
-   return pivot;
 }
 
 /* multiply two matrices of the same size */

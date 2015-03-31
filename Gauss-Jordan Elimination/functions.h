@@ -50,7 +50,4 @@ void deallocateSpace(double **data, int size);
 //Create identity matrix
 double** createIdentity(int size);
 
-//Find pivot
-int findPivot(double** data, int curr, int size);
-
 #endif

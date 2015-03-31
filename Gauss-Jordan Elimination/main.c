@@ -5,7 +5,7 @@
 
 //Main
 int main(int argc, char** argv){
-   int size, i, j; //Variable that will store the size
+   int size;
    double** data; //Matrix that will store data from file
    double** invert; //Matrix that will store inverted matrix
    
@@ -21,13 +21,6 @@ int main(int argc, char** argv){
          return(EXIT_FAILURE);
       }
       
-      for (i = 0; i <size; i++) {
-         for (j = 0; j < size; j++) {
-            printf("%3.6f ", invert[i][j]);
-         }
-         printf("\n");
-      }
-      
       //Testing
       int sof = Write_matrix_to_file(argv[3], invert, size);
       
@@ -41,15 +34,42 @@ int main(int argc, char** argv){
       deallocateSpace(invert, size);
    }
    else if (argc >= 5 && strcmp(argv[1],"-m") == 0){
-      printf("m\n");
+      double** aData;
+      double** bData;
+      double** output;
+      int sizeb;
+      
+      aData = Read_matrix_from_file(argv[2], &size);
+      bData = Read_matrix_from_file(argv[3], &sizeb);
+      
+      if(size != sizeb){
+         return(EXIT_FAILURE);
+      }
+      
+      output = Matrix_matrix_multiply(aData, bData, size);
+      
+      int sof = Write_matrix_to_file(argv[4], output, size);
+      
+      //If the wrte-to-file failed, print error
+      if(sof == 0){
+         fprintf(stderr, "Writing to the file failed\n");
+         return(EXIT_FAILURE);
+      }
+      
+      //Deallocating space
+      deallocateSpace(aData, size);
+      deallocateSpace(bData, sizeb);
+      deallocateSpace(output, size);
    }
    else if (argc >= 3 && strcmp(argv[1], "-d") == 0) {
-      printf("d\n");
+      data = Read_matrix_from_file(argv[2], &size);
+      
+      printf("%e\n", Deviation_from_identity(data, size));
    }
    else{
       fprintf(stderr, "ERROR: Enter in '-i', '-m', or '-d' as the third argument.\n");
       return(EXIT_FAILURE);
    }
 
-return 0;
+return EXIT_SUCCESS;
 }

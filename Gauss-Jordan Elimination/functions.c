@@ -71,6 +71,7 @@ int Write_matrix_to_file(char *filename, double **matrix, int size)
    int i; //x-coordinate
    int j; //y-coordinate
    
+   fwrite(&size, sizeof(int), 1, output);
    //Read data from matrix and write to the file
    for(i = 0; i < size; i++){
       for(j = 0; j < size; j++){
@@ -97,77 +98,75 @@ double **Invert_matrix(double **data, int size)
       return NULL;
    }
    
-   int i, j; //counter
+   int i,j,k; //counters
+   int pivot, y, z;
+   double lower, current;
+   double leftState,rightState,state,currState; //positions in left/right part of augmented matrix
    
-   printf("--DATA--\n");
-   for (i = 0; i <size; i++) {
-      for (j = 0; j < size; j++) {
-         printf("%3.6f ", data[i][j]);
-      }
-      printf("\n");
-   }
-   int pivot;
-   float lower;
-   float current;
-   int leftState, rightState; //positions in left/right part of augmented matrix
-   for(i = 0; i < size; i++){
-      pivot = i;
+   for(i=0;i<size;i++)
+   {
       //get pivot row
-      for (j = i + 1; j < size; j++) {
-         lower = data[j - 1][i];
-         current = data[j][i];
-         lower = lower > 0 ? lower : -1 * lower;
+      pivot = i;
+      for(y=i+1;y<size;y++)
+      {
+         lower = data[y-1][i];
+         current = data[y][i];
+         lower = lower > 0 ? lower: -1 * lower;
          current = current > 0 ? current: -1 * current;
-         //printf("%f %f\n", lower, current);
-         if (current > lower) {
-            pivot = j;
+         if(current>lower)
+         {
+            pivot = y;
          }
       }
-      printf("%d %f\n", pivot, data[pivot][i]);
-      if(Is_zero(data[pivot][i])){
-         fprintf(stderr, "The matrix is noninvertible.\n");
+      
+      //Checking to see if invertible
+      if(Is_zero(data[pivot][i]))
+      {
+         deallocateSpace(inverse, size);
+         deallocateSpace(data, size);
          return NULL;
       }
       
       //Swapping rows based on pivot
-      for(j = 0; j < size; j++) {
+      for(z=0;z<size;z++)
+      {
          //swap rows on left side
-         leftState = data[i][j];
-         data[i][j] = data[pivot][j];
-         data[pivot][j] = leftState;
+         leftState=data[i][z];
+         data[i][z]=data[pivot][z];
+         data[pivot][z]=leftState;
          
          //swap rows on right side
-         rightState = inverse[i][j];
-         inverse[i][j] = inverse[pivot][j];
-         inverse[pivot][j] = rightState;
+         rightState=inverse[i][z];
+         inverse[i][z]=inverse[pivot][z];
+         inverse[pivot][z]=rightState;
       }
       
-      //Divide column elements by the current value which should be the highest based on the row operations
-      int currState = data[i][i];
-      for(j = 0; j < size ; j++) {
-         data[i][j] /= currState;
-         inverse[i][j] /= currState;
-      }
-      
-      int k;
+      //Divide column element by the current value which should be the highest based on the row operations
+      state=data[i][i];
       j = 0;
-      while(j < size){
-         if (j == i) {
-            j++;
-         }
-         //Now that the upper row has a '1', subtract the lower row with a multiple of that row to get more zeroes
-         else {
-            float state = data[j][i];
-            for(k = 0; k < size; k++){
-               data[j][k] -= state * data[i][k];
-               inverse[j][k] -= state * inverse[i][k];
+      while(j<size)
+      {
+         data[i][j] /= state;
+         inverse[i][j] /= state;
+         j++;
+      }
+      
+      j = 0;
+      while(j<size)
+      {
+         if(j!=i)
+         {
+            currState=data[j][i];
+            for(k=0;k<size;k++)
+            {
+               data[j][k] -= currState*data[i][k];
+               inverse[j][k] -= currState*inverse[i][k];
             }
-            j++;
          }
+         j++;
       }
    }
    
-   //deallocate space for data
    deallocateSpace(data, size);
    return inverse;
 }
@@ -192,7 +191,23 @@ double **createIdentity(int size){
 
 double **Matrix_matrix_multiply(double **matrixa, double **matrixb, int size)
 {
-   return NULL;
+   double sum = 0;
+   double** output = allocateSpace(size);
+   if(output == NULL){
+      return NULL;
+   }
+   int i, j, k; //counter
+   for (i = 0; i <size; i++) {
+      for (j = 0; j < size; j++) {
+         for (k = 0; k < size; k++) {
+            sum += matrixa[i][k] * matrixb[k][j];
+         }
+         output[i][j] = sum;
+         sum = 0;
+      }
+   }
+   
+   return output;
 }
 
 /* return the sum of the absolute differences between the */
@@ -201,7 +216,19 @@ double **Matrix_matrix_multiply(double **matrixa, double **matrixb, int size)
 
 double Deviation_from_identity(double **matrix, int size)
 {
-   return 0.0;
+   double** identity = createIdentity(size);
+   double sum = 0;
+   int i, j; //counters
+   
+   for(i = 0; i < size; i++){
+      for (j = 0; j < size; j++) {
+         sum += abs(matrix[i][j] - identity[i][j]);
+      }
+   }
+   
+   deallocateSpace(identity, size);
+   deallocateSpace(matrix, size);
+   return sum;
 }
 
 //Allocate space for data

@@ -6,3 +6,4 @@ Currently Contains:
 * Guessing Game
 * Factorial calculation
 * Minesweeper Map generator
+* Gauss-Jordan Elimination (to find the inverse of a matrix)

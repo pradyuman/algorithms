@@ -13,26 +13,24 @@ int main(int argc, char** argv){
          return EXIT_FAILURE;
       }
 
-      //Opening output file
-      FILE* output = fopen(argv[3],"wb");
-      if (output == NULL) {
-         fclose(input);
-         return EXIT_FAILURE;
-      }
-
       //Reading file
       BMP_Image *image = Read_BMP_Image(input);
       if (image == NULL) {
          fclose(input);
-         fclose(output);
          return EXIT_FAILURE;
       }
       
       BMP_Image *outputImage = Top_Half_BMP_Image(image);
       if (outputImage == NULL) {
          fclose(input);
-         fclose(output);
          Free_BMP_Image(image);
+         return EXIT_FAILURE;
+      }
+      
+      //Opening output file
+      FILE* output = fopen(argv[3],"wb");
+      if (output == NULL) {
+         fclose(input);
          return EXIT_FAILURE;
       }
       
@@ -58,26 +56,24 @@ int main(int argc, char** argv){
          return EXIT_FAILURE;
       }
       
-      //Opening output file
-      FILE* output = fopen(argv[3],"wb");
-      if (output == NULL) {
-         fclose(input);
-         return EXIT_FAILURE;
-      }
-      
       //Reading file
       BMP_Image *image = Read_BMP_Image(input);
       if (image == NULL) {
          fclose(input);
-         fclose(output);
          return EXIT_FAILURE;
       }
       
       BMP_Image *outputImage = Left_Half_BMP_Image(image);
       if (outputImage == NULL) {
          fclose(input);
-         fclose(output);
          Free_BMP_Image(image);
+         return EXIT_FAILURE;
+      }
+      
+      //Opening output file
+      FILE* output = fopen(argv[3],"wb");
+      if (output == NULL) {
+         fclose(input);
          return EXIT_FAILURE;
       }
       

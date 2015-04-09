@@ -145,9 +145,7 @@ void Free_BMP_Image(BMP_Image* image) {
 BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
 {
    
-   BMP_Image *topCrop = NULL;
-   
-   topCrop = (BMP_Image *)malloc(sizeof(BMP_Image));
+   BMP_Image *topCrop = (BMP_Image *)malloc(sizeof(BMP_Image));
    //If memory allocation failed
    if (topCrop == NULL) {
       return NULL;
@@ -197,9 +195,7 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
  */
 BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
 {
-   BMP_Image *leftCrop = NULL;
-   
-   leftCrop = (BMP_Image *)malloc(sizeof(BMP_Image));
+   BMP_Image *leftCrop = (BMP_Image *)malloc(sizeof(BMP_Image));
    //If memory allocation failed
    if (leftCrop == NULL) {
       return NULL;
@@ -211,5 +207,35 @@ BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
    //Setting new image header to the same information as input image header
    leftCrop->header = image->header;
    
-   return NULL;
+   //Replacing width from old image with new width (that was divided by two)
+   leftCrop->header.width = width;
+   
+   //Padding
+   int padding = (leftCrop->header.width * leftCrop->header.bits / 8 + 3) / 4 * 4;
+   
+   //New image size is padding * width
+   leftCrop->header.imagesize = padding * width;
+   
+   //New total file size is new imagesize + 54
+   leftCrop->header.size = leftCrop->header.imagesize + 54;
+   
+   //Write to file
+   unsigned char *writeData = (unsigned char *)malloc(leftCrop->header.imagesize);
+   //Checking to see if the allocation was successful
+   if (writeData == NULL) {
+      return NULL;
+   }
+   
+   int bound = image->header.imagesize - leftCrop->header.imagesize;
+   
+   int i; //counter
+   
+   for (i = 0; i < leftCrop->header.imagesize; i++) {
+      writeData[i] = (image->data)[bound+i];
+   }
+   
+   //Saving to bmp image
+   leftCrop->data = writeData;
+   
+   return leftCrop;
 }

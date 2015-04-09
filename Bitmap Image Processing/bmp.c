@@ -156,50 +156,52 @@ void Free_BMP_Image(BMP_Image* image) {
  */
 BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
 {
-   printf("Could not get this code to work\n");
    
-   /*
    BMP_Image *topCrop = NULL;
    
    topCrop = (BMP_Image *)malloc(sizeof(BMP_Image));
+   //If memory allocation failed
    if (topCrop == NULL) {
       return NULL;
    }
    
-   //Divide by two
-   long int tempHeight;
-   tempHeight = image->header.height;
-   printf("point 1\n");
-   long int height = tempHeight / 2 + tempHeight % 2;
+   //Divide height by two
+   long int height = image->header.height / 2 + image->header.height % 2;
    
+   //Setting new image header to the same information as input image header
    topCrop->header = image->header;
-   (topCrop->header).height = height;
+   
+   //Replacing height from old image with new height (that was divided by two)
+   topCrop->header.height = height;
 
    //Padding
-   int padding = ((topCrop->header).width * (topCrop->header).bits / 8 + 3) / 4 * 4;
+   int padding = (topCrop->header.width * topCrop->header.bits / 8 + 3) / 16;
 
-   (topCrop->header).imagesize = padding * height;
+   //New image size is padding * height
+   topCrop->header.imagesize = padding * height;
    
-   (topCrop->header).size = (topCrop->header).imagesize + 54;
+   //New total file size is new imagesize + 54
+   topCrop->header.size = topCrop->header.imagesize + 54;
    
    //Write to file
-   unsigned char * writeData = (unsigned char *)malloc((topCrop->header).imagesize);
+   unsigned char *writeData = (unsigned char *)malloc(topCrop->header.imagesize);
    //Checking to see if the allocation was successful
    if (writeData == NULL) {
       return NULL;
    }
    
-   int bound = (image->header).imagesize - (topCrop->header).imagesize;
+   int bound = image->header.imagesize - topCrop->header.imagesize;
    
    int i; //counter
-   for (i = 0; i < (topCrop->header).imagesize; i++) {
+   
+   for (i = 0; i < topCrop->header.imagesize; i++) {
       writeData[i] = (image->data)[bound+i];
    }
    
    //Saving to bmp image
    topCrop->data = writeData;
    
-   printf("complete\n");*/
+   printf("complete\n");
    
    return NULL;
 }

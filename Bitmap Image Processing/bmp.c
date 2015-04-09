@@ -161,8 +161,10 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    //Write to file
    unsigned char *writeData = (unsigned char *)malloc(topCrop->header.imagesize);
    //Checking to see if the allocation was successful
-   if (writeData == NULL)
+   if (writeData == NULL){
+      free(topCrop);
       return NULL;
+   }
    
    int bound = image->header.imagesize - topCrop->header.imagesize;
    
@@ -210,8 +212,10 @@ BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
    //Write to file
    leftCrop->data = (unsigned char*)malloc(padding * leftCrop->header.height);
    //Checking to see if the allocation was successful
-   if(leftCrop->data == NULL)
+   if(leftCrop->data == NULL){
+      free(leftCrop);
       return NULL;
+   }
    
    //Need to save data go by coordinates (so the array indexes are r x c)
    int bound = padding - leftCrop->header.width * leftCrop->header.bits / 8;

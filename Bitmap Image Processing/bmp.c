@@ -217,8 +217,8 @@ BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
    int inputPadding = (image->header.width * image->header.bits / 8 + 3) / 4 * 4;
    
    //Easier access to input and output data
-   unsigned char *(writeData)[padding] = (unsigned char (*)[padding])leftCrop->data;
-   unsigned char *(inputData)[inputPadding] = (unsigned char (*)[inputPadding])image->data;
+   unsigned char (*writeData)[padding] = (unsigned char (*)[padding])leftCrop->data;
+   unsigned char (*inputData)[inputPadding] = (unsigned char (*)[inputPadding])image->data;
    
    int i, j; //counter
    

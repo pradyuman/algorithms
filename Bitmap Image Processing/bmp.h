@@ -7,6 +7,21 @@
 #define TRUE 1
 #define FALSE 0
 
+/* bit positions of RGB in a 16-bit representation */
+/* R: 0111110000000000 */
+/* G: 0000001111100000 */
+/* B: 0000000000011111 */
+
+#define RED_MASK 0x7C00
+#define GREEN_MASK 0x03E0
+#define BLUE_MASK 0x001F
+
+/* position from the least significant position */
+
+#define RED_BIT 10
+#define GREEN_BIT 5
+#define BLUE_BIT 0
+
 #pragma pack(push)  // save the original data alignment
 #pragma pack(1)     // Set data alignment to 1 byte boundary
 
@@ -76,4 +91,13 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image);
 //
 BMP_Image *Left_Half_BMP_Image(BMP_Image *image);
 
+// Given a BMP_Image, create a new 16-bit image that is converted from a given 
+// 24-bit image
+//
+BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image);
+
+// Given a BMP_Image, create a new 16-bit image that is converted from a given 
+// 24-bit image
+//
+BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image);
 #endif /* bmp.h */

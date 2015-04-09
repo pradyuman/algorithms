@@ -80,9 +80,10 @@ BMP_Image *Read_BMP_Image(FILE* fptr) {
       return NULL;
 
    // if read successful, check validity of header
-   if (!Is_BMP_Header_Valid(&(bmp_image->header), fptr))
+   if (!Is_BMP_Header_Valid(&(bmp_image->header), fptr)){
+      Free_BMP_Image(bmp_image);
       return NULL;
-
+   }
    // Allocate memory for image data
    BMP_Header *temp = &(bmp_image->header);
    int imageSize = temp->imagesize;

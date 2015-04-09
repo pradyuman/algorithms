@@ -52,29 +52,16 @@ int Is_BMP_Header_Valid(BMP_Header* header, FILE *fptr) {
 
   // check for file size, image size
   // based on bits, width, and height
-   int padding = (header->width * header->bits / 8 + 3) / 16;
+  int padding = (header->width * header->bits / 8 + 3) / 4 * 4;
+  int size = padding * header->height;
    
-   if (header->bits == 24){
-      //Checking if imagesize is correct
-      if (header->imagesize != padding * (header->width * header->height * 3)) {
-         return FALSE;
-      }
-      //Checking is size is correct
-      if(header->size != padding * (header->width * header->height * 3) + 54){
-         return FALSE;
-      }
-      
-   }
-   else if (header->bits == 16){
-      //Checking if imagesize is correct
-      if (header->imagesize != padding * (header->width * header->height * 2)) {
-         return FALSE;
-      }
-      //Checking if size is correct
-      if(header->size != padding * (header->width * header->height * 2) + 54){
-         return FALSE;
-      }
-   }
+  if (header->imagesize != size) {
+     return FALSE;
+  }
+  
+  if (header->size != size + 54) {
+     return FALSE;
+  }
 
   return TRUE;
 }
@@ -97,20 +84,21 @@ BMP_Image *Read_BMP_Image(FILE* fptr) {
 
    //Read the first 54 bytes of the source into the header
    fread(&(bmp_image->header), 54, 1, fptr);
+   
    //Checking to see if fread working properly
    if (&(bmp_image->header) == NULL)
       return NULL;
 
    // if read successful, check validity of header
-   if (!Is_BMP_Header_Valid(&(bmp_image->header), fptr))
+   if (!Is_BMP_Header_Valid(&(bmp_image->header), fptr)){
+      printf("kaori\n");
       return NULL;
-
+   }
    // Allocate memory for image data
    BMP_Header *temp = &(bmp_image->header);
    int imageSize = temp->imagesize;
    //size of image
    bmp_image->data = (unsigned char *)malloc(imageSize);
-
   
    // read in the image data
    fread(bmp_image->data, imageSize, 1, fptr);
@@ -167,7 +155,7 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    
    //Divide height by two
    long int height = image->header.height / 2 + image->header.height % 2;
-   
+   //printf("kaori\n");
    //Setting new image header to the same information as input image header
    topCrop->header = image->header;
    
@@ -175,7 +163,7 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    topCrop->header.height = height;
 
    //Padding
-   int padding = (topCrop->header.width * topCrop->header.bits / 8 + 3) / 16;
+   int padding = (topCrop->header.width * topCrop->header.bits / 8 + 3) / 4 * 4;
 
    //New image size is padding * height
    topCrop->header.imagesize = padding * height;
@@ -203,7 +191,7 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    
    printf("complete\n");
    
-   return NULL;
+   return topCrop;
 }
 
 /* Given a BMP_Image, create a new image that retains left half of the given 

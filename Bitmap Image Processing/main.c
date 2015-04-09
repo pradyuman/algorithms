@@ -14,22 +14,24 @@ int main(int argc, char** argv){
       }
 
       //Opening output file
-      FILE* output = fopen(argv[2],"wb");
+      FILE* output = fopen(argv[3],"wb");
+      
       if (output == NULL) {
+         fclose(input);
          return EXIT_FAILURE;
       }
-      
+
       //Reading file
-      BMP_Image *image = NULL;
+      BMP_Image *image;
       
       image = Read_BMP_Image(input);
       
-      BMP_Image *outputImage = NULL;
+      BMP_Image *outputImage;
       
       outputImage = Top_Half_BMP_Image(image);
       
       //Writing to output file
-      //Write_BMP_Image(output, outputImage);
+      Write_BMP_Image(output, outputImage);
 
       fclose(input);
       fclose(output);

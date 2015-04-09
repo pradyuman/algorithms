@@ -15,30 +15,86 @@ int main(int argc, char** argv){
 
       //Opening output file
       FILE* output = fopen(argv[3],"wb");
-      
       if (output == NULL) {
          fclose(input);
          return EXIT_FAILURE;
       }
 
       //Reading file
-      BMP_Image *image;
+      BMP_Image *image = Read_BMP_Image(input);
+      if (image == NULL) {
+         fclose(input);
+         fclose(output);
+         return EXIT_FAILURE;
+      }
       
-      image = Read_BMP_Image(input);
-      
-      BMP_Image *outputImage;
-      
-      outputImage = Top_Half_BMP_Image(image);
+      BMP_Image *outputImage = Top_Half_BMP_Image(image);
+      if (outputImage == NULL) {
+         fclose(input);
+         fclose(output);
+         Free_BMP_Image(image);
+         return EXIT_FAILURE;
+      }
       
       //Writing to output file
-      Write_BMP_Image(output, outputImage);
-
+      int valid = Write_BMP_Image(output, outputImage);
+      if (valid == FALSE) {
+         fclose(input);
+         fclose(output);
+         Free_BMP_Image(image);
+         Free_BMP_Image(outputImage);
+      }
+      
+      
       fclose(input);
       fclose(output);
-
+      Free_BMP_Image(image);
+      Free_BMP_Image(outputImage);
    }
    else if (argc >= 4 && strcmp(argv[1],"-l") == 0){
-  
+      //Opening input file
+      FILE* input = fopen(argv[2],"rb");
+      if (input == NULL) {
+         return EXIT_FAILURE;
+      }
+      
+      //Opening output file
+      FILE* output = fopen(argv[3],"wb");
+      if (output == NULL) {
+         fclose(input);
+         return EXIT_FAILURE;
+      }
+      
+      //Reading file
+      BMP_Image *image = Read_BMP_Image(input);
+      if (image == NULL) {
+         fclose(input);
+         fclose(output);
+         return EXIT_FAILURE;
+      }
+      
+      BMP_Image *outputImage = Left_Half_BMP_Image(image);
+      if (outputImage == NULL) {
+         fclose(input);
+         fclose(output);
+         Free_BMP_Image(image);
+         return EXIT_FAILURE;
+      }
+      
+      //Writing to output file
+      int valid = Write_BMP_Image(output, outputImage);
+      if (valid == FALSE) {
+         fclose(input);
+         fclose(output);
+         Free_BMP_Image(image);
+         Free_BMP_Image(outputImage);
+      }
+      
+      
+      fclose(input);
+      fclose(output);
+      Free_BMP_Image(image);
+      Free_BMP_Image(outputImage);
    }
    else {
       return(EXIT_FAILURE);

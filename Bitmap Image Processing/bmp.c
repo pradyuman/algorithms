@@ -154,8 +154,8 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    }
    
    //Divide height by two
-   long int height = image->header.height / 2 + image->header.height % 2;
-   //printf("kaori\n");
+   int height = image->header.height / 2 + image->header.height % 2;
+   
    //Setting new image header to the same information as input image header
    topCrop->header = image->header;
    
@@ -189,8 +189,6 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    //Saving to bmp image
    topCrop->data = writeData;
    
-   printf("complete\n");
-   
    return topCrop;
 }
 
@@ -199,6 +197,19 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
  */
 BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
 {
-   printf("Did not complete\n");
+   BMP_Image *leftCrop = NULL;
+   
+   leftCrop = (BMP_Image *)malloc(sizeof(BMP_Image));
+   //If memory allocation failed
+   if (leftCrop == NULL) {
+      return NULL;
+   }
+   
+   //Divide width by two
+   int width = image->header.width / 2 + image->header.width % 2;
+   
+   //Setting new image header to the same information as input image header
+   leftCrop->header = image->header;
+   
    return NULL;
 }

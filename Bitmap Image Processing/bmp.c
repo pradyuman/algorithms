@@ -9,59 +9,49 @@
 
 int Is_BMP_Header_Valid(BMP_Header* header, FILE *fptr) {
   // Make sure this is a BMP file
-  if (header->type != 0x4d42) {
+  if (header->type != 0x4d42)
      return FALSE;
-  }
 
   // check the offset from beginning of file to image data
   // essentially the size of the BMP header
-  // BMP_HEADER_SIZE for this exercise/assignment
-  if (header->offset != BMP_HEADER_SIZE) {
+  if (header->offset != BMP_HEADER_SIZE)
      return FALSE;
-  }
       
   // check the DIB header size == DIB_HEADER_SIZE
-  if (header->DIB_header_size != DIB_HEADER_SIZE) {
+  if (header->DIB_header_size != DIB_HEADER_SIZE)
      return FALSE;
-  }
 
   // Make sure there is only one image plane
-  if (header->planes != 1) {
+  if (header->planes != 1)
     return FALSE;
-  }
   // Make sure there is no compression
-  if (header->compression != 0) {
+  if (header->compression != 0)
     return FALSE;
-  }
 
   // skip the test for xresolution, yresolution
 
   // ncolours and importantcolours should be 0
-  if (header->ncolours != 0) {
+  if (header->ncolours != 0)
     return FALSE;
-  }
-  if (header->importantcolours != 0) {
+   
+  if (header->importantcolours != 0)
     return FALSE;
-  }
   
   // Make sure we are getting 24 bits per pixel
   // or 16 bits per pixel
-  if (header->bits != 24 && header->bits != 16) {
+  if (header->bits != 24 && header->bits != 16)
     return FALSE;
-  }
 
   // check for file size, image size
   // based on bits, width, and height
   int padding = (header->width * header->bits / 8 + 3) / 4 * 4;
   int size = padding * header->height;
    
-  if (header->imagesize != size) {
+  if (header->imagesize != size)
      return FALSE;
-  }
   
-  if (header->size != size + 54) {
+  if (header->size != size + 54)
      return FALSE;
-  }
 
   return TRUE;
 }
@@ -90,10 +80,9 @@ BMP_Image *Read_BMP_Image(FILE* fptr) {
       return NULL;
 
    // if read successful, check validity of header
-   if (!Is_BMP_Header_Valid(&(bmp_image->header), fptr)){
-      printf("kaori\n");
+   if (!Is_BMP_Header_Valid(&(bmp_image->header), fptr))
       return NULL;
-   }
+
    // Allocate memory for image data
    BMP_Header *temp = &(bmp_image->header);
    int imageSize = temp->imagesize;
@@ -147,9 +136,8 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    
    BMP_Image *topCrop = (BMP_Image *)malloc(sizeof(BMP_Image));
    //If memory allocation failed
-   if (topCrop == NULL) {
+   if (topCrop == NULL)
       return NULL;
-   }
    
    //Divide height by two
    int height = image->header.height / 2 + image->header.height % 2;
@@ -172,9 +160,8 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    //Write to file
    unsigned char *writeData = (unsigned char *)malloc(topCrop->header.imagesize);
    //Checking to see if the allocation was successful
-   if (writeData == NULL) {
+   if (writeData == NULL)
       return NULL;
-   }
    
    int bound = image->header.imagesize - topCrop->header.imagesize;
    
@@ -213,29 +200,44 @@ BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
    //Padding
    int padding = (leftCrop->header.width * leftCrop->header.bits / 8 + 3) / 4 * 4;
    
-   //New image size is padding * width
-   leftCrop->header.imagesize = padding * width;
+   //New image size is padding * height
+   leftCrop->header.imagesize = padding * leftCrop->header.height;
    
    //New total file size is new imagesize + 54
    leftCrop->header.size = leftCrop->header.imagesize + 54;
    
    //Write to file
-   unsigned char *writeData = (unsigned char *)malloc(leftCrop->header.imagesize);
+   leftCrop->data = (unsigned char*)malloc(padding * leftCrop->header.height);
    //Checking to see if the allocation was successful
-   if (writeData == NULL) {
+   if(leftCrop->data == NULL)
       return NULL;
-   }
    
-   int bound = image->header.imagesize - leftCrop->header.imagesize;
+   //Need to save data go by coordinates (so the array indexes are r x c)
+   int bound = padding - leftCrop->header.width * leftCrop->header.bits / 8;
+   int inputPadding = (image->header.width * image->header.bits / 8 + 3) / 4 * 4;
    
-   int i; //counter
+   //Easier access to input and output data
+   unsigned char *(writeData)[padding] = (unsigned char (*)[padding])leftCrop->data;
+   unsigned char *(inputData)[inputPadding] = (unsigned char (*)[inputPadding])image->data;
    
-   for (i = 0; i < leftCrop->header.imagesize; i++) {
-      writeData[i] = (image->data)[bound+i];
+   int i, j; //counter
+   
+   for (i = 0; i < leftCrop->header.height; i++) {
+      //Writing data
+      for (j = 0; j < padding - bound; j++) {
+         writeData[i][j] = inputData[i][j];
+      }
+      //Adding padding zeroes
+      while (j < padding) {
+         writeData[i][j] = 0;
+         j++;
+      }
    }
    
    //Saving to bmp image
-   leftCrop->data = writeData;
+   for (i = 0; i < padding * leftCrop->header.height; i++) {
+      leftCrop->data[i] = ((unsigned char *)writeData)[i];
+   }
    
    return leftCrop;
 }

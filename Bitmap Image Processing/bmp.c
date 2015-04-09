@@ -134,7 +134,6 @@ void Free_BMP_Image(BMP_Image* image) {
  */
 BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
 {
-   
    BMP_Image *topCrop = (BMP_Image *)malloc(sizeof(BMP_Image));
    //If memory allocation failed
    if (topCrop == NULL)
@@ -245,4 +244,34 @@ BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
    }
    
    return leftCrop;
+}
+
+// Given a BMP_Image, create a new 16-bit image that is converted from a given
+// 24-bit image
+//
+BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
+   BMP_Image *converted = (BMP_Image *)malloc(sizeof(BMP_Image));
+   //If memory allocation failed
+   if (converted == NULL)
+      return NULL;
+   
+   //Setting new image header to the same information as input image header
+   converted->header = image->header;
+   
+   //Padding
+   int padding = (converted->header.width * converted->header.bits / 8 + 3) / 4 * 4;
+   
+   //New image size is padding * height
+   converted->header.imagesize = padding * height;
+   
+   //New total file size is new imagesize + 54
+   converted->header.size = converted->header.imagesize + 54;
+   return NULL;
+}
+
+// Given a BMP_Image, create a new 16-bit image that is converted from a given
+// 24-bit image
+//
+BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
+   return NULL;
 }

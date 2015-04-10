@@ -264,7 +264,7 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    int padding = width * 2 % 4;
    
    //input padding
-   int inputPadding = image->header.width * 3 % 4 ? 4 - image->header.width * 3 % 4 : 0;
+   int inputPadding = width * 3 % 4 ? 4 - width * 3 % 4 : 0;
    
    //Setting new image header to the same information as input image header
    converted->header = image->header;
@@ -324,6 +324,65 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
 // 24-bit image
 //
 BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
+   BMP_Image *converted = (BMP_Image *)malloc(sizeof(BMP_Image));
+   //If memory allocation failed
+   if (converted == NULL)
+      return NULL;
    
-   return NULL;
+   //context variables
+   int width = image->header.width;
+   int height = image->header.height;
+   
+   //padding will only be 0 or 2
+   int padding = width * 3 % 4 ? 4 - width * 3 % 4 : 0;
+   
+   //input padding
+   int inputPadding = width * 2 % 4;
+   
+   //Setting new image header to the same information as input image header
+   converted->header = image->header;
+   
+   //Changing bits from 24 to 16
+   converted->header.bits = 24;
+   
+   //Setting new imagesize
+   converted->header.imagesize = height * (width * 3 + padding);
+   
+   //Setting new size
+   converted->header.size = converted->header.imagesize + 54;
+   
+   int i, j, k; //counters
+   uint8_t r = 0;
+   uint8_t g = 0;
+   uint8_t b = 0;
+   
+   //Initializing converted->data
+   converted->data = (unsigned char *)malloc(converted->header.imagesize);
+   
+   for (i = 0; i < height; i++) {
+      k = i * (width * 3 + padding);
+      for (j = i * (width * 2 + padding + inputPadding); j < (i + 1) * (width * 2 + inputPadding); j += 2) {
+         //Resetting all bits of r/g/b to 0
+         r = 0;
+         g = 0;
+         b = 0;
+         
+         //getting the 5 bit values
+         b = ;
+         g = ;
+         r = ;
+         //Getting rgb values from image and making them 8 bits
+         converted->data[k] = (b * 255) / 31; //b
+         converted->data[k + 1] = (g * 255) / 31; //g
+         converted->data[k + 2] = (r * 255) / 31; //r
+         
+         k += 3;
+      }
+      if(padding){
+         converted->data[k] = 0;
+         converted->data[k + 1] = 0;
+      }
+   }
+   
+   return converted;
 }

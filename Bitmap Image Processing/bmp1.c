@@ -288,10 +288,10 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    //Initializing converted->data
    converted->data = (unsigned char *)malloc(converted->header.imagesize);
    
-   int k = 0; //counter
+  // int k = 0; //counter
    for (i = 0; i < height; i++) {
-      k = i * (width * 2 + padding);
-      for (j = i * (width * 3 + padding); j < (i+1) * width * 3; j+=3) {
+     // k = i * (width * 2 + padding);
+      for (j = i; j < (i+1) * width; j++) {
          //Resetting all 16 bits of pixel to 0
          pixel = 0;
          r = 0;
@@ -301,20 +301,20 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
           *Shifting over by 10/5/0 (r/g/b) so that when bitwise OR
           *is used, no data is lost.
           */
-         b = (image->data[j] >> 3) << 10;
-         g = (image->data[j+1] >> 3) << 5;
-         r = image->data[j+2] >> 3;
+         b = (((image->data[j] & 0xFF) >> 16) >> 3) << 10;
+         g = (((image->data[j] & 0xFF00) >> 8) >> 3) << 5;
+         r = (image->data[j] & 0xFF0000) >> 3;
          //Since pixel is all zeroes, bitwise OR will just import all the asserted values
          pixel = pixel | b | g | r;
          
          //Splitting pixel into two 8 bit parts
-         converted->data[k] = pixel >> 8;
-         converted->data[k + 1] = (pixel << 8) >> 8; //adds zeroes
-         k += 2;
+         converted->data[j] = pixel >> 8;
+         converted->data[j+1] = (pixel << 8) >> 8; //adds zeroes
+      //   k += 2;
       }
       if(padding){
-         converted->data[k] = 0;
-         converted->data[k + 1] = 0;
+         converted->data[j] = 0;
+         converted->data[j + 1] = 0;
       }
    }
    

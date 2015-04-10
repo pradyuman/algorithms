@@ -67,11 +67,13 @@ BMP_Image *Read_BMP_Image(FILE* fptr) {
    //Rewinding the file pointer
    rewind(fptr);
 
-   BMP_Image *bmp_image = NULL;
-
    //Allocate memory for BMP_Image*;
-   bmp_image = (BMP_Image *)calloc(sizeof(BMP_Image),1);
-
+   BMP_Image *bmp_image = (BMP_Image *)calloc(sizeof(BMP_Image),1);
+   
+   //Checking to see if fread working properly
+   if (bmp_image == NULL)
+      return NULL;
+   
    //Read the first 54 bytes of the source into the header
    fread(&(bmp_image->header), 54, 1, fptr);
    
@@ -292,7 +294,7 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    
    for (i = 0; i < height; i++) {
       k = i * (width * 2 + padding);
-      for (j = i * inputBitWidth; j < (i + 1) * inputBitWidth; j += 3) {
+      for (j = i * inputBitWidth; (j + 2) < (i + 1) * inputBitWidth; j += 3) {
          //Resetting all 16 bits of pixel to 0
          pixel = 0;
          r = 0;
@@ -367,7 +369,7 @@ BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
    
    for (i = 0; i < height; i++) {
       k = i * (width * 3 + padding);
-      for (j = i * inputBitWidth; j < (i + 1) * inputBitWidth; j += 2) {
+      for (j = i * inputBitWidth; (j + 1) < (i + 1) * inputBitWidth; j += 2) {
          //Resetting all bits of r/g/b to 0
          r = 0;
          g = 0;

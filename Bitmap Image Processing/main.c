@@ -106,25 +106,24 @@ int main(int argc, char** argv){
       }
       
       //Converting image
-      BMP_Image *outputImage;
+      BMP_Image *outputImage = (BMP_Image *)malloc(sizeof(BMP_Image));
+      if (outputImage == NULL) {
+         fclose(input);
+         Free_BMP_Image(image);
+         return EXIT_FAILURE;
+      }
+      
       if (image->header.bits == 24) {
          outputImage = Convert_24_to_16_BMP_Image(image);
-         if (outputImage == NULL) {
-            fclose(input);
-            Free_BMP_Image(image);
-            return EXIT_FAILURE;
-         }
       }
       else if (image->header.bits == 16){
          outputImage = Convert_16_to_24_BMP_Image(image);
-         if (outputImage == NULL) {
-            fclose(input);
-            Free_BMP_Image(image);
-            return EXIT_FAILURE;
-         }
       }
       //invalid input (wrong number of bits)
       else {
+         fclose(input);
+         Free_BMP_Image(outputImage);
+         Free_BMP_Image(image);
          return EXIT_FAILURE;
       }
       
@@ -144,7 +143,6 @@ int main(int argc, char** argv){
          Free_BMP_Image(image);
          Free_BMP_Image(outputImage);
       }
-      
       
       fclose(input);
       fclose(output);

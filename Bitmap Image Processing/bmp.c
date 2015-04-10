@@ -264,7 +264,7 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    int padding = width * 2 % 4;
    
    //input padding
-   int inputPadding = 4 - image->header.width * 3 % 4;
+   int inputPadding = image->header.width * 3 % 4 ? 4 - image->header.width * 3 % 4 : 0;
    
    //Setting new image header to the same information as input image header
    converted->header = image->header;
@@ -278,20 +278,15 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    //Setting new size
    converted->header.size = converted->header.imagesize + 54;
    
-   int i, j; //counter
+   int i, j, k; //counters
    uint16_t pixel = 0;
    uint16_t r = 0;
    uint16_t g = 0;
    uint16_t b = 0;
    
-   /*since converted->data is an array of unsigned char (8 bits),
-    *need to split each 16 bit pixel into two before writing to the array
-    */
-   
    //Initializing converted->data
    converted->data = (unsigned char *)malloc(converted->header.imagesize);
    
-   int k = 0; //counter
    for (i = 0; i < height; i++) {
       k = i * (width * 2 + padding);
       for (j = i * (width * 3 + padding + inputPadding); j < (i + 1) * (width * 3 + inputPadding); j += 3) {
@@ -304,13 +299,14 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
           *Shifting over by 10/5/0 (r/g/b) so that when bitwise OR
           *is used, no data is lost.
           */
-         b = (image->data[j] >> 3) << 10;
-         g = (image->data[j+1] >> 3) << 5;
-         r = image->data[j+2] >> 3;
+         b = (image->data[j] >> 3) << RED_BIT;
+         g = (image->data[j+1] >> 3) << GREEN_BIT;
+         r = image->data[j+2] >> 3 << BLUE_BIT;
          //Since pixel is all zeroes, bitwise OR will just import all the asserted values
          pixel = pixel | b | g | r;
          
-         //Splitting pixel into two 8 bit parts
+         //since converted->data is an array of unsigned char (8 bits),
+         //need to split each 16 bit pixel into two before writing to the array
          converted->data[k] = pixel >> 8;
          converted->data[k + 1] = (pixel << 8) >> 8; //adds zeroes
          k += 2;

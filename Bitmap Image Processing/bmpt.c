@@ -304,16 +304,16 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
           *Shifting over by 10/5/0 (r/g/b) so that when bitwise OR
           *is used, no data is lost.
           */
-         b = image->data[j] >> 3 << RED_BIT;
-         g = image->data[j+1] >> 3 << GREEN_BIT;
-         r = image->data[j+2] >> 3 << BLUE_BIT;
+         b = image->data[j] >> 3 << BLUE_BIT;
+         g = image->data[j + 1] >> 3 << GREEN_BIT;
+         r = image->data[j + 2] >> 3 << RED_BIT;
          //Since pixel is all zeroes, bitwise OR will just import all the asserted values
          pixel = b | g | r;
          
          //since converted->data is an array of unsigned char (8 bits),
          //need to split each 16 bit pixel into two before writing to the array
-         converted->data[k++] = pixel >> 8;
-         converted->data[k++] = pixel << 8 >> 8; //adds zeroes
+         converted->data[k++] = (unsigned char)pixel;
+         converted->data[k++] = (unsigned char)(pixel >> 8); //adds zeroes
       }
       
       if(padding){
@@ -377,13 +377,13 @@ BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
          
          //getting the 5 bit values
          b = image->data[j] << 3 >> 3;
-         g = image->data[j] >> 3 | image->data[j+1] << 6 >> 4;
+         g = image->data[j] >> 3 | (image->data[j+1] << 6 >> 4);
          r = image->data[j+1] >> 2;
          
          //Getting rgb values from image and making them 8 bits
-         converted->data[k] = (b * 255) / 31; //b
-         converted->data[k + 1] = (g * 255) / 31; //g
-         converted->data[k + 2] = (r * 255) / 31; //r
+         converted->data[k] = (unsigned char)((b * 255) / 31); //b
+         converted->data[k + 1] = (unsigned char)((g * 255) / 31); //g
+         converted->data[k + 2] = (unsigned char)((r * 255) / 31); //r
          
          k += 3;
       }

@@ -357,12 +357,13 @@ BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
    converted->header.size = converted->header.imagesize + 54;
    
    int i, j, k; //counters
-   uint8_t r = 0;
-   uint8_t g = 0;
-   uint8_t b = 0;
+   uint16_t pixel = 0;
+   unsigned char r = 0;
+   unsigned char g = 0;
+   unsigned char b = 0;
    
    //Initializing converted->data
-   converted->data = (unsigned char *)malloc(converted->header.imagesize);
+   converted->data = (unsigned char *)malloc(converted->header.imagesize * sizeof(unsigned char));
    
    //width of a row in image->data
    int inputBitWidth = width * 2 + inputPadding;
@@ -371,21 +372,25 @@ BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
       k = i * (width * 3 + padding);
       for (j = i * inputBitWidth; (j + 1) < (i + 1) * inputBitWidth; j += 2) {
          //Resetting all bits of r/g/b to 0
+         pixel = 0;
          r = 0;
          g = 0;
          b = 0;
          
+         //Creating 16 bit pixel
+         pixel = image->data[j + 1];
+         pixel <<= 8;
+         pixel |= image->data[j];
+         
          //getting the 5 bit values
-         b = image->data[j] << 3 >> 3;
-         g = image->data[j] >> 3 | (image->data[j+1] << 6 >> 4);
-         r = image->data[j+1] >> 2;
+         b = (BLUE_MASK & pixel);
+         g = (GREEN_MASK & pixel) >> 5;
+         r = (RED_MASK & pixel) >> 10;
          
          //Getting rgb values from image and making them 8 bits
-         converted->data[k] = (unsigned char)((b * 255) / 31); //b
-         converted->data[k + 1] = (unsigned char)((g * 255) / 31); //g
-         converted->data[k + 2] = (unsigned char)((r * 255) / 31); //r
-         
-         k += 3;
+         converted->data[k++] = ((b * 255) / 31); //b
+         converted->data[k++] = ((g * 255) / 31); //g
+         converted->data[k++] = ((r * 255) / 31); //r
       }
       //padding counter
       int pc = 0;

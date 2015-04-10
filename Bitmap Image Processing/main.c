@@ -104,11 +104,27 @@ int main(int argc, char** argv){
          fclose(input);
          return EXIT_FAILURE;
       }
-       
-      BMP_Image *outputImage = Convert_24_to_16_BMP_Image(image);
-      if (outputImage == NULL) {
-         fclose(input);
-         Free_BMP_Image(image);
+      
+      //Converting image
+      BMP_Image *outputImage;
+      if (image->header.bits == 24) {
+         outputImage = Convert_24_to_16_BMP_Image(image);
+         if (outputImage == NULL) {
+            fclose(input);
+            Free_BMP_Image(image);
+            return EXIT_FAILURE;
+         }
+      }
+      else if (image->header.bits == 16){
+         outputImage = Convert_16_to_24_BMP_Image(image);
+         if (outputImage == NULL) {
+            fclose(input);
+            Free_BMP_Image(image);
+            return EXIT_FAILURE;
+         }
+      }
+      //invalid input (wrong number of bits)
+      else {
          return EXIT_FAILURE;
       }
       

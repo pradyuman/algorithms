@@ -287,9 +287,12 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    //Initializing converted->data
    converted->data = (unsigned char *)malloc(converted->header.imagesize);
    
+   //width of a row in image->data
+   int inputBitWidth = width * 3 + inputPadding;
+   
    for (i = 0; i < height; i++) {
       k = i * (width * 2 + padding);
-      for (j = i * (width * 3 + padding + inputPadding); j < (i + 1) * (width * 3 + inputPadding); j += 3) {
+      for (j = i * inputBitWidth; j < (i + 1) * inputBitWidth; j += 3) {
          //Resetting all 16 bits of pixel to 0
          pixel = 0;
          r = 0;
@@ -299,8 +302,8 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
           *Shifting over by 10/5/0 (r/g/b) so that when bitwise OR
           *is used, no data is lost.
           */
-         b = (image->data[j] >> 3) << RED_BIT;
-         g = (image->data[j+1] >> 3) << GREEN_BIT;
+         b = image->data[j] >> 3 << RED_BIT;
+         g = image->data[j+1] >> 3 << GREEN_BIT;
          r = image->data[j+2] >> 3 << BLUE_BIT;
          //Since pixel is all zeroes, bitwise OR will just import all the asserted values
          pixel = pixel | b | g | r;
@@ -308,7 +311,7 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
          //since converted->data is an array of unsigned char (8 bits),
          //need to split each 16 bit pixel into two before writing to the array
          converted->data[k] = pixel >> 8;
-         converted->data[k + 1] = (pixel << 8) >> 8; //adds zeroes
+         converted->data[k + 1] = pixel << 8 >> 8; //adds zeroes
          k += 2;
       }
       if(padding){
@@ -333,10 +336,10 @@ BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
    int width = image->header.width;
    int height = image->header.height;
    
-   //padding will only be 0 or 2
+   //padding
    int padding = width * 3 % 4 ? 4 - width * 3 % 4 : 0;
    
-   //input padding
+   //input padding will only be 0 or 2
    int inputPadding = width * 2 % 4;
    
    //Setting new image header to the same information as input image header
@@ -359,18 +362,22 @@ BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
    //Initializing converted->data
    converted->data = (unsigned char *)malloc(converted->header.imagesize);
    
+   //width of a row in image->data
+   int inputBitWidth = width * 2 + inputPadding;
+   
    for (i = 0; i < height; i++) {
       k = i * (width * 3 + padding);
-      for (j = i * (width * 2 + padding + inputPadding); j < (i + 1) * (width * 2 + inputPadding); j += 2) {
+      for (j = i * inputBitWidth; j < (i + 1) * inputBitWidth; j += 2) {
          //Resetting all bits of r/g/b to 0
          r = 0;
          g = 0;
          b = 0;
          
          //getting the 5 bit values
-         b = ;
-         g = ;
-         r = ;
+         b = image->data[j] << 3 >> 3;
+         g = image->data[j] >> 3 | image->data[j+1] << 6 >> 4;
+         r = image->data[j+1] >> 2;
+         
          //Getting rgb values from image and making them 8 bits
          converted->data[k] = (b * 255) / 31; //b
          converted->data[k + 1] = (g * 255) / 31; //g
@@ -378,9 +385,11 @@ BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
          
          k += 3;
       }
-      if(padding){
-         converted->data[k] = 0;
-         converted->data[k + 1] = 0;
+      //padding counter
+      int pc = padding;
+      
+      while(pc--){
+         converted->data[k + pc - 1] = 0;
       }
    }
    

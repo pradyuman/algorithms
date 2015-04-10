@@ -31,18 +31,20 @@ int main(int argc, char** argv){
       FILE* output = fopen(argv[3],"wb");
       if (output == NULL) {
          fclose(input);
+         Free_BMP_Image(image);
+         Free_BMP_Image(outputImage);
          return EXIT_FAILURE;
       }
       
       //Writing to output file
       int valid = Write_BMP_Image(output, outputImage);
+      
       if (valid == FALSE) {
          fclose(input);
          fclose(output);
          Free_BMP_Image(image);
          Free_BMP_Image(outputImage);
       }
-      
       
       fclose(input);
       fclose(output);
@@ -74,6 +76,8 @@ int main(int argc, char** argv){
       FILE* output = fopen(argv[3],"wb");
       if (output == NULL) {
          fclose(input);
+         Free_BMP_Image(image);
+         Free_BMP_Image(outputImage);
          return EXIT_FAILURE;
       }
       
@@ -85,7 +89,6 @@ int main(int argc, char** argv){
          Free_BMP_Image(image);
          Free_BMP_Image(outputImage);
       }
-      
       
       fclose(input);
       fclose(output);
@@ -106,23 +109,16 @@ int main(int argc, char** argv){
       }
       
       //Converting image
-      BMP_Image *outputImage = (BMP_Image *)malloc(sizeof(BMP_Image));
-      if (outputImage == NULL) {
-         fclose(input);
-         Free_BMP_Image(image);
-         return EXIT_FAILURE;
-      }
-      
-      if (image->header.bits == 24) {
+      BMP_Image *outputImage;
+      //If input image is 24 bits, convert to 16 bits
+      if (image->header.bits == 24)
          outputImage = Convert_24_to_16_BMP_Image(image);
-      }
-      else if (image->header.bits == 16){
+      //If input image is 16 bits, convert to 24 bits
+      else if (image->header.bits == 16)
          outputImage = Convert_16_to_24_BMP_Image(image);
-      }
       //invalid input (wrong number of bits)
       else {
          fclose(input);
-         Free_BMP_Image(outputImage);
          Free_BMP_Image(image);
          return EXIT_FAILURE;
       }
@@ -131,6 +127,8 @@ int main(int argc, char** argv){
       FILE* output = fopen(argv[3],"wb");
       if (output == NULL) {
          fclose(input);
+         Free_BMP_Image(image);
+         Free_BMP_Image(outputImage);
          return EXIT_FAILURE;
       }
       

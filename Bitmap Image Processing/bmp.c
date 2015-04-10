@@ -388,10 +388,11 @@ BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
          k += 3;
       }
       //padding counter
-      int pc = padding;
+      int pc = 0;
       
-      while(pc--){
-         converted->data[k + pc - 1] = 0;
+      while(pc < padding){
+         converted->data[k + pc] = 0;
+         pc++;
       }
    }
    

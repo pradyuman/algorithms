@@ -263,6 +263,9 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    //padding will only be 0 or 2
    int padding = width * 2 % 4;
    
+   //input padding
+   int inputPadding = 4 - image->header.width * 3 % 4;
+   
    //Setting new image header to the same information as input image header
    converted->header = image->header;
    
@@ -291,7 +294,7 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    int k = 0; //counter
    for (i = 0; i < height; i++) {
       k = i * (width * 2 + padding);
-      for (j = i * (width * 3 + padding); j < (i+1) * width * 3; j+=3) {
+      for (j = i * (width * 3 + padding + inputPadding); j < (i + 1) * (width * 3 + inputPadding); j += 3) {
          //Resetting all 16 bits of pixel to 0
          pixel = 0;
          r = 0;

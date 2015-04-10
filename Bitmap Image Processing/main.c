@@ -95,16 +95,13 @@ int main(int argc, char** argv){
    else if (argc >= 4 && strcmp(argv[1],"-c") == 0){
       //Opening input file
       FILE* input = fopen(argv[2],"rb");
-      if (input == NULL) {
-                           printf("kaori3\n");
+      if (input == NULL)
          return EXIT_FAILURE;
-      }
       
       //Reading file
       BMP_Image *image = Read_BMP_Image(input);
       if (image == NULL) {
          fclose(input);
-                           printf("kaori2\n");
          return EXIT_FAILURE;
       }
        
@@ -112,7 +109,6 @@ int main(int argc, char** argv){
       if (outputImage == NULL) {
          fclose(input);
          Free_BMP_Image(image);
-                  printf("kaori0\n");
          return EXIT_FAILURE;
       }
       
@@ -120,7 +116,6 @@ int main(int argc, char** argv){
       FILE* output = fopen(argv[3],"wb");
       if (output == NULL) {
          fclose(input);
-         printf("kaori1\n");
          return EXIT_FAILURE;
       }
       
@@ -141,7 +136,6 @@ int main(int argc, char** argv){
       Free_BMP_Image(outputImage);
    }
    else {
-                        printf("kaori4\n");
       return(EXIT_FAILURE);
    }
 

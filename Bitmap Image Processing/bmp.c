@@ -286,6 +286,9 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    unsigned char pixel_l; //left side of 16 bit pixel
    unsigned char pixel_r; //right side of 16 bit pixel
    
+   //Initializing converted->data
+   converted->data = (unsigned char *)malloc(converted->header.imagesize);
+   
    for (i = 0; i < height; i++) {
       for (j = i * (width * 2 + padding); width; j += 3) {
          //Resetting all 16 bits of pixel to 0

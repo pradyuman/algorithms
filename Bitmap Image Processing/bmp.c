@@ -309,7 +309,7 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
          
          //Splitting pixel into two 8 bit parts
          pixel_l = pixel >> 8;
-         pixel_r = pixel >> 8 << 8; //adds zeroes
+         pixel_r = (pixel << 8) >> 8; //adds zeroes
          
          converted->data[j] = pixel_l;
          converted->data[j+1] = pixel_r;

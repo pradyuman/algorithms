@@ -256,11 +256,11 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
       return NULL;
    
    //context variables
-   width = image->header.width;
-   height = image->header.height;
+   int width = image->header.width;
+   int height = image->header.height;
    
    //padding will only be 0 or 2
-   int padding = width * 2 % 4 ? 2 : 0;
+   int padding = width * 2 % 4;
    
    //Setting new image header to the same information as input image header
    converted->header = image->header;
@@ -269,15 +269,51 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    converted->header.bits = 16;
    
    //Setting new imagesize
-   converted->header.imagesize =
+   converted->header.imagesize = height * (width * 2 + padding);
    
-   int i; //counter
+   //Setting new size
+   converted->header.size = converted->header.imagesize + 54;
    
-   for (i = 0; i < converted->header.imagesize; i++) {
-      converted[i] = (image->data)[i] >> 3;
+   int i, j; //counter
+   uint16_t pixel = 0;
+   uint16_t r = 0;
+   uint16_t g = 0;
+   uint16_t b = 0;
+   
+   /*since converted->data is an array of unsigned char (8 bits),
+    *need to split each 16 bit pixel into two before writing to the array
+    */
+   unsigned char pixel_l; //left side of 16 bit pixel
+   unsigned char pixel_r; //right side of 16 bit pixel
+   
+   for (i = 0; i < height; i++) {
+      for (j = i * (width * 2 + padding); width; j += 3) {
+         //Resetting all 16 bits of pixel to 0
+         pixel = 0;
+         /*Getting rgb values from image and making them 5 bits
+          *Shifting over by 10/5/0 (r/g/b) so that when bitwise OR
+          *is used, no data is lost.
+          */
+         r = (image->data[j] >> 3) << 10;
+         g = (image->data[j+1] >> 3) << 5;
+         b = image->data[j+2] >> 3;
+         //Since pixel is all zeroes, bitwise OR will just import all the asserted values
+         pixel = pixel | r | g | b;
+         
+         //Splitting pixel into two 8 bit parts
+         pixel_l = pixel >> 8;
+         pixel_r = pixel >> 8 << 8; //adds zeroes
+         
+         converted->data[j] = pixel_l;
+         converted->data[j+1] = pixel_r;
+      }
+      if(padding){
+         converted->data[j + 1] = 0;
+         converted->data[j + 2] = 0;
+      }
    }
    
-   return NULL;
+   return converted;
 }
 
 // Given a BMP_Image, create a new 16-bit image that is converted from a given

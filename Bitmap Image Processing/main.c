@@ -105,15 +105,13 @@ int main(int argc, char** argv){
          fclose(input);
          return EXIT_FAILURE;
       }
-      /*
-       *Need to edit this part
        
-      BMP_Image *outputImage = Left_Half_BMP_Image(image);
+      BMP_Image *outputImage = Convert_24_to_16_BMP_Image(image);
       if (outputImage == NULL) {
          fclose(input);
          Free_BMP_Image(image);
          return EXIT_FAILURE;
-      }*/
+      }
       
       //Opening output file
       FILE* output = fopen(argv[3],"wb");
@@ -124,6 +122,7 @@ int main(int argc, char** argv){
       
       //Writing to output file
       int valid = Write_BMP_Image(output, outputImage);
+      
       if (valid == FALSE) {
          fclose(input);
          fclose(output);

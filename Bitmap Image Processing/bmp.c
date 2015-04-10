@@ -148,7 +148,7 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    //Replacing height from old image with new height (that was divided by two)
    topCrop->header.height = height;
 
-   //Padding
+   //Padding (width)
    int padding = (topCrop->header.width * topCrop->header.bits / 8 + 3) / 4 * 4;
 
    //New image size is padding * height
@@ -199,7 +199,7 @@ BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
    //Replacing width from old image with new width (that was divided by two)
    leftCrop->header.width = width;
    
-   //Padding
+   //Padding (width)
    int padding = (leftCrop->header.width * leftCrop->header.bits / 8 + 3) / 4 * 4;
    
    //New image size is padding * height
@@ -216,7 +216,7 @@ BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
       return NULL;
    }
    
-   //Need to save data go by coordinates (so the array indexes are r x c)
+   //Need to save data by coordinates (so the array indexes are r x c)
    int bound = padding - leftCrop->header.width * leftCrop->header.bits / 8;
    int inputPadding = (image->header.width * image->header.bits / 8 + 3) / 4 * 4;
    
@@ -255,17 +255,28 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    if (converted == NULL)
       return NULL;
    
+   //context variables
+   width = image->header.width;
+   height = image->header.height;
+   
+   //padding will only be 0 or 2
+   int padding = width * 2 % 4 ? 2 : 0;
+   
    //Setting new image header to the same information as input image header
    converted->header = image->header;
    
-   //Padding
-   int padding = (converted->header.width * converted->header.bits / 8 + 3) / 4 * 4;
+   //Changing bits from 24 to 16
+   converted->header.bits = 16;
    
-   //New image size is padding * height
-   converted->header.imagesize = padding * height;
+   //Setting new imagesize
+   converted->header.imagesize =
    
-   //New total file size is new imagesize + 54
-   converted->header.size = converted->header.imagesize + 54;
+   int i; //counter
+   
+   for (i = 0; i < converted->header.imagesize; i++) {
+      converted[i] = (image->data)[i] >> 3;
+   }
+   
    return NULL;
 }
 

@@ -157,7 +157,7 @@ BMP_Image *Top_Half_BMP_Image(BMP_Image *image)
    topCrop->header.imagesize = padding * height;
    
    //New total file size is new imagesize + 54
-   topCrop->header.size = topCrop->header.imagesize + 54;
+   topCrop->header.size = topCrop->header.imagesize + BMP_HEADER_SIZE;
    
    //Write to file
    unsigned char *writeData = (unsigned char *)malloc(topCrop->header.imagesize);
@@ -208,7 +208,7 @@ BMP_Image *Left_Half_BMP_Image(BMP_Image *image)
    leftCrop->header.imagesize = padding * leftCrop->header.height;
    
    //New total file size is new imagesize + 54
-   leftCrop->header.size = leftCrop->header.imagesize + 54;
+   leftCrop->header.size = leftCrop->header.imagesize + BMP_HEADER_SIZE;
    
    //Write to file
    leftCrop->data = (unsigned char*)malloc(padding * leftCrop->header.height);
@@ -278,7 +278,7 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    converted->header.imagesize = height * (width * 2 + padding);
    
    //Setting new size
-   converted->header.size = converted->header.imagesize + 54;
+   converted->header.size = converted->header.imagesize + BMP_HEADER_SIZE;
    
    int i, j, k; //counters
    uint16_t pixel = 0;
@@ -354,7 +354,7 @@ BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image){
    converted->header.imagesize = height * (width * 3 + padding);
    
    //Setting new size
-   converted->header.size = converted->header.imagesize + 54;
+   converted->header.size = converted->header.imagesize + BMP_HEADER_SIZE;
    
    int i, j, k; //counters
    uint16_t pixel = 0;

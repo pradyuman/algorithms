@@ -185,8 +185,8 @@ int main(int argc, char** argv){
       
       fclose(input);
       fclose(output);
-      //Free_BMP_Image(image);
-      //Free_BMP_Image(outputImage);
+      Free_BMP_Image(image);
+      Free_BMP_Image(outputImage);
    }
    else {
       return(EXIT_FAILURE);

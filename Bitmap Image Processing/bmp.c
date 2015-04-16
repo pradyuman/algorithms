@@ -299,8 +299,7 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
          b = 0;
          /*Getting rgb values from image and making them 5 bits
           *Shifting over by 10/5/0 (r/g/b) so that when bitwise OR
-          *is used, no data is lost.
-          */
+          *is used, no data is lost. */
          b = image->data[j] >> 3 << BLUE_BIT;
          g = image->data[j + 1] >> 3 << GREEN_BIT;
          r = image->data[j + 2] >> 3 << RED_BIT;
@@ -378,10 +377,7 @@ BMP_Image *Convert_24_to_16_BMP_Image_with_Dithering(BMP_Image *image) {
          pixelComponent[0] = 0; //r
          pixelComponent[1] = 0; //g
          pixelComponent[2] = 0; //b
-         /*Getting rgb values from image and making them 5 bits
-          *Shifting over by 10/5/0 (r/g/b) so that when bitwise OR
-          *is used, no data is lost.
-          */
+
          p = 0; //traverse pixelComponent
          for (l = j; p < 3; l++) {
             //divide by 16 here to conserve data
@@ -389,20 +385,24 @@ BMP_Image *Convert_24_to_16_BMP_Image_with_Dithering(BMP_Image *image) {
             //checking for bounds
             old = old > 255 ? 255 : old;
             old = old < 0 ? 0 : old;
+            //changing from 8-bit to 5-bit
             pixelComponent[p] = old >> 3;
             //scaled back to 24 bit
             error = old - pixelComponent[p++] * 255 / 31;
             //if statements are to check bounds
-            if (j + 3 < (i + 1) * inputBitWidth)
+            if (j + 3 < (i + 1) * inputBitWidth) //right bound
                quantizationError[l + 3] += 7 * error;
-            if (j % inputBitWidth && j < (height - 1) * inputBitWidth)
+            if (j % inputBitWidth && j < (height - 1) * inputBitWidth) //left and lower bound
                quantizationError[l - 3 + inputBitWidth] += 3 * error;
-            if (j < (height - 1) * inputBitWidth)
+            if (j < (height - 1) * inputBitWidth) // lower bound
                quantizationError[l + inputBitWidth] += 5 * error;
-            if (j + 3 < (i + 1) * inputBitWidth - inputPadding && j < (height - 1) * inputBitWidth)
+            if (j + 3 < (i + 1) * inputBitWidth - inputPadding && j < (height - 1) * inputBitWidth) //right and lower bound
                quantizationError[l + 3 + inputBitWidth] += error;
          }
          
+         /*Getting rgb values from dithered pixel and shifting
+          *over by 10/5/0 (r/g/b) so that when bitwise OR
+          *is used, no data is lost. */
          pixelComponent[0] <<= BLUE_BIT;
          pixelComponent[1] <<= GREEN_BIT;
          pixelComponent[2] <<= RED_BIT;

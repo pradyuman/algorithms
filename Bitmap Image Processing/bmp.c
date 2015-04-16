@@ -392,7 +392,7 @@ BMP_Image *Convert_24_to_16_BMP_Image_with_Dithering(BMP_Image *image) {
             //if statements are to check bounds
             if (j + 3 < (i + 1) * inputBitWidth) //right bound
                quantizationError[l + 3] += 7 * error;
-            if (j % inputBitWidth && j < (height - 1) * inputBitWidth) //left and lower bound
+            if (j % inputBitWidth && j < (height - 1) * inputBitWidth) //lower and left bound
                quantizationError[l - 3 + inputBitWidth] += 3 * error;
             if (j < (height - 1) * inputBitWidth) // lower bound
                quantizationError[l + inputBitWidth] += 5 * error;

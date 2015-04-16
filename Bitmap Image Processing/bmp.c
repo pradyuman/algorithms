@@ -47,10 +47,7 @@ int Is_BMP_Header_Valid(BMP_Header* header, FILE *fptr) {
   int padding = (header->width * header->bits / 8 + 3) / 4 * 4;
   int size = padding * header->height;
    
-  if (header->imagesize != size)
-     return FALSE;
-  
-  if (header->size != size + 54)
+  if ((header->imagesize != size) || (header->size != size + 54))
      return FALSE;
 
   return TRUE;
@@ -323,6 +320,141 @@ BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image) {
    }
    
    return converted;
+}
+
+BMP_Image *Convert_24_to_16_BMP_Image_with_Dithering(BMP_Image *image) {
+   BMP_Image *converted = (BMP_Image *)malloc(sizeof(BMP_Image));
+   //If memory allocation failed
+   if (converted == NULL)
+      return NULL;
+   
+   //context variables
+   int width = image->header.width;
+   int height = image->header.height;
+   
+   //padding will only be 0 or 2
+   int padding = width * 2 % 4;
+   
+   //input padding
+   int inputPadding = width * 3 % 4 ? 4 - width * 3 % 4 : 0;
+   
+   //Setting new image header to the same information as input image header
+   converted->header = image->header;
+   
+   //Changing bits from 24 to 16
+   converted->header.bits = 16;
+   
+   //Setting new imagesize
+   converted->header.imagesize = height * (width * 2 + padding);
+   
+   //Setting new size
+   converted->header.size = converted->header.imagesize + BMP_HEADER_SIZE;
+   
+   int i, j, k; //counters
+   uint16_t pixel = 0;
+   uint16_t r = 0;
+   uint16_t g = 0;
+   uint16_t b = 0;
+   
+   //Initializing converted->data
+   converted->data = (unsigned char *)malloc(converted->header.imagesize);
+   
+   //width of a row in image->data
+   int inputBitWidth = width * 3 + inputPadding;
+   
+   double error = 0; //stores quantization error
+   int old = 0; //scaled up from 16
+   
+   //keep track of quantization error
+   int *quantizationError = (int *)calloc(converted->header.imagesize, sizeof(int));
+   
+   for (i = 0; i < height; i++) {
+      k = i * (width * 2 + padding);
+      for (j = i * inputBitWidth; (j + 2) < (i + 1) * inputBitWidth; j += 3) {
+         //resetting error value
+         error = 0;
+         
+         //Resetting all 16 bits of pixel to 0
+         pixel = 0;
+         r = 0;
+         g = 0;
+         b = 0;
+         /*Getting rgb values from image and making them 5 bits
+          *Shifting over by 10/5/0 (r/g/b) so that when bitwise OR
+          *is used, no data is lost.
+          */
+         //divide by 16 here to conserve data
+         old = image->data[j] + quantizationError[j] / 16;
+         //checking for bounds
+         old = old > 255 ? 255 : old;
+         old = old < 0 ? 0 : old;
+         b = old >> 3;
+         //scaled back to 24 bit
+         error = old - b * 255 / 31;
+         if (j + 3 < (i + 1) * inputBitWidth)
+            quantizationError[j + 3] += 7 * error;
+         if (j % inputBitWidth && j < (height - 1) * inputBitWidth)
+            quantizationError[j - 3 + inputBitWidth] += 3 * error;
+         if (j < (height - 1) * inputBitWidth)
+            quantizationError[j + inputBitWidth] += 5 * error;
+         if (j + 3 < (i + 1) * inputBitWidth - inputPadding && j < (height - 1) * inputBitWidth)
+            quantizationError[j + 3 + inputBitWidth] += error;
+         
+         old = image->data[j + 1] + quantizationError[j + 1] / 16;
+         //checking for bounds
+         old = old > 255 ? 255 : old;
+         old = old < 0 ? 0 : old;
+         g = old >> 3;
+         //scaled back to 24 bit
+         error = old - g * 255 / 31;
+         if (j + 3 < (i + 1) * inputBitWidth)
+            quantizationError[j + 1 + 3] += 7 * error;
+         if (j % inputBitWidth && j < (height - 1) * inputBitWidth)
+            quantizationError[j + 1 - 3 + inputBitWidth] += 3 * error;
+         if (j < (height - 1) * inputBitWidth)
+            quantizationError[j + 1 + inputBitWidth] += 5 * error;
+         if (j + 3 < (i + 1) * inputBitWidth - inputPadding && j < (height - 1) * inputBitWidth)
+            quantizationError[j + 1 + 3 + inputBitWidth] += error;
+         
+         old = image->data[j + 2] + quantizationError[j + 2] / 16;
+         //checking for bounds
+         old = old > 255 ? 255 : old;
+         old = old < 0 ? 0 : old;
+         r = old >> 3;
+         //scaled back to 24 bit
+         error = old - r * 255 / 31;
+         if (j + 3 < (i + 1) * inputBitWidth)
+            quantizationError[j + 2 + 3] += 7 * error;
+         if (j % inputBitWidth && j < (height - 1) * inputBitWidth)
+            quantizationError[j + 2 - 3 + inputBitWidth] += 3 * error;
+         if (j < (height - 1) * inputBitWidth)
+            quantizationError[j + 2 + inputBitWidth] += 5 * error;
+         if (j + 3 < (i + 1) * inputBitWidth - inputPadding && j < (height - 1) * inputBitWidth)
+            quantizationError[j + 2 + 3 + inputBitWidth] += error;
+         
+         b <<= BLUE_BIT;
+         g <<= GREEN_BIT;
+         r <<= RED_BIT;
+         
+         //Since pixel is all zeroes, bitwise OR will just import all the asserted values
+         pixel = b | g | r;
+         
+         //since converted->data is an array of unsigned char (8 bits),
+         //need to split each 16 bit pixel into two before writing to the array
+         converted->data[k++] = (unsigned char)pixel;
+         converted->data[k++] = (unsigned char)(pixel >> 8); //adds zeroes
+      
+      }
+      
+      if(padding){
+         converted->data[k++] = 0;
+         converted->data[k] = 0;
+      }
+   }
+   
+   free(quantizationError);
+   return converted;
+   
 }
 
 // Given a BMP_Image, create a new 16-bit image that is converted from a given

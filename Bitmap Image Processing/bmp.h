@@ -97,6 +97,11 @@ BMP_Image *Left_Half_BMP_Image(BMP_Image *image);
 BMP_Image *Convert_24_to_16_BMP_Image(BMP_Image *image);
 
 // Given a BMP_Image, create a new 16-bit image that is converted from a given 
+// 24-bit image by applying the Floyd-Steinberg dithering algorithm
+//
+BMP_Image *Convert_24_to_16_BMP_Image_with_Dithering(BMP_Image *image);
+
+// Given a BMP_Image, create a new 16-bit image that is converted from a given 
 // 24-bit image
 //
 BMP_Image *Convert_16_to_24_BMP_Image(BMP_Image *image);

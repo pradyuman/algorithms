@@ -353,6 +353,7 @@ BMP_Image *Convert_24_to_16_BMP_Image_with_Dithering(BMP_Image *image) {
    int i, j, k, l; //counters
    uint16_t pixel = 0;
    uint16_t pixelComponent[3];
+   int p = 0; //to traverse pixelComponent
    
    //Initializing converted->data
    converted->data = (unsigned char *)malloc(converted->header.imagesize);
@@ -362,10 +363,9 @@ BMP_Image *Convert_24_to_16_BMP_Image_with_Dithering(BMP_Image *image) {
    
    double error = 0; //stores quantization error
    int old = 0; //scaled up from 16
-   int index = 0;
    
    //keep track of quantization error
-   int *quantizationError = (int *)calloc(converted->header.imagesize, sizeof(int));
+   int *quantizationError = (int *)calloc(image->header.imagesize, sizeof(int));
    
    for (i = 0; i < height; i++) {
       k = i * (width * 2 + padding);
@@ -382,16 +382,16 @@ BMP_Image *Convert_24_to_16_BMP_Image_with_Dithering(BMP_Image *image) {
           *Shifting over by 10/5/0 (r/g/b) so that when bitwise OR
           *is used, no data is lost.
           */
-         index = 0; //traverse pixelComponent
-         for (l = j; index < 3; l++) {
+         p = 0; //traverse pixelComponent
+         for (l = j; p < 3; l++) {
             //divide by 16 here to conserve data
             old = image->data[l] + quantizationError[l] / 16;
             //checking for bounds
             old = old > 255 ? 255 : old;
             old = old < 0 ? 0 : old;
-            pixelComponent[index] = old >> 3;
+            pixelComponent[p] = old >> 3;
             //scaled back to 24 bit
-            error = old - pixelComponent[index++] * 255 / 31;
+            error = old - pixelComponent[p++] * 255 / 31;
             //if statements are to check bounds
             if (j + 3 < (i + 1) * inputBitWidth)
                quantizationError[l + 3] += 7 * error;

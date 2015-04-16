@@ -390,7 +390,7 @@ BMP_Image *Convert_24_to_16_BMP_Image_with_Dithering(BMP_Image *image) {
             //scaled back to 24 bit
             error = old - pixelComponent[p++] * 255 / 31;
             //if statements are to check bounds
-            if (j + 3 < (i + 1) * inputBitWidth) //right bound
+            if (j + 3 < (i + 1) * inputBitWidth - inputPadding) //right bound
                quantizationError[l + 3] += 7 * error;
             if (j % inputBitWidth && j < (height - 1) * inputBitWidth) //lower and left bound
                quantizationError[l - 3 + inputBitWidth] += 3 * error;

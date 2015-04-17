@@ -37,17 +37,12 @@ int main(int argc, char** argv){
       }
       
       //Writing to output file
-      int valid = Write_BMP_Image(output, outputImage);
+      Write_BMP_Image(output, outputImage);
       
-      if (valid == FALSE) {
-         fclose(input);
-         fclose(output);
-         Free_BMP_Image(image);
-         Free_BMP_Image(outputImage);
-      }
-      
+      //Closing files
       fclose(input);
       fclose(output);
+      //Freeing memory
       Free_BMP_Image(image);
       Free_BMP_Image(outputImage);
    }
@@ -82,16 +77,12 @@ int main(int argc, char** argv){
       }
       
       //Writing to output file
-      int valid = Write_BMP_Image(output, outputImage);
-      if (valid == FALSE) {
-         fclose(input);
-         fclose(output);
-         Free_BMP_Image(image);
-         Free_BMP_Image(outputImage);
-      }
+      Write_BMP_Image(output, outputImage);
       
+      //Closing files
       fclose(input);
       fclose(output);
+      //Freeing memory
       Free_BMP_Image(image);
       Free_BMP_Image(outputImage);
    }
@@ -133,17 +124,12 @@ int main(int argc, char** argv){
       }
       
       //Writing to output file
-      int valid = Write_BMP_Image(output, outputImage);
+      Write_BMP_Image(output, outputImage);
       
-      if (valid == FALSE) {
-         fclose(input);
-         fclose(output);
-         Free_BMP_Image(image);
-         Free_BMP_Image(outputImage);
-      }
-      
+      //Closing files
       fclose(input);
       fclose(output);
+      //Freeing memory
       Free_BMP_Image(image);
       Free_BMP_Image(outputImage);
    }
@@ -183,8 +169,10 @@ int main(int argc, char** argv){
       //Writing to output file
       Write_BMP_Image(output, outputImage);
       
+      //Closing files
       fclose(input);
       fclose(output);
+      //Freeing memory
       Free_BMP_Image(image);
       Free_BMP_Image(outputImage);
    }

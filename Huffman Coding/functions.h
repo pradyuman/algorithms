@@ -21,7 +21,7 @@ void deconstructNode(listNode *node);
 void push(listNode *head, listNode *node);
 listNode *pop(listNode *head);
 int stackSize(listNode *head);
-void stackFlush(listNode *head)
+void stackFlush(listNode *head);
 
 //tree function declarations
 treeNode *constructTree(int key, treeNode *left, treeNode *right);

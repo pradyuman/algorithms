@@ -42,16 +42,22 @@ treeNode *constructHuffmanTree(FILE *input) {
          
          treeNode *tree = constructTree(token, NULL, NULL);
          if (tree == NULL) {
+            fprintf(stderr, "functions.c:45 | ERROR 06: Tree could not be constructed");
             token = EXCEPTION;
             break;
          }
          
          listNode *stackNode = constructNode(tree);
          if (stackNode == NULL) {
+            fprintf(stderr, "functions.c:26 | ERROR 07: List node could not be constructed");
+            destructTree(tree);
             token = EXCEPTION;
             break;
          }
+         push(&stack, stackNode);
       }
+      else
+         break;
    }
    
    if (token == '0' && stackSize(&stack) == 1) {

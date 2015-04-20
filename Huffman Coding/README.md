@@ -5,4 +5,4 @@ Errors:
 * 04: Huffman tree could not be created
 * 05: Output file could not be opened or created
 * 06: Tree could not be constructed
-
+* 07: List node could not be constructed

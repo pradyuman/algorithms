@@ -23,6 +23,7 @@ treeNode *constructHuffmanTree(FILE *input) {
          treeNode *tree = constructTree(ASCII_COUNT, leftTree, rightTree);
          
          if (tree == NULL) {
+            fprintf(stderr, "functions.c:26 | ERROR 06: Tree could not be constructed");
             destructNode(leftNode);
             destructNode(rightNode);
             token = EXCEPTION;

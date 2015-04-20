@@ -16,11 +16,12 @@ typedef struct _listNode {
 } listNode;
 
 //list function declarations
+listNode *constructNode(treeNode *tree);
+void deconstructNode(listNode *node);
 void push(listNode *head, listNode *node);
 listNode *pop(listNode *head);
 int stackSize(listNode *head);
-listNode *constructNode(treeNode *tree);
-void nodeDeconstruct(listNode *node);
+void stackFlush(listNode *head)
 
 //tree function declarations
 treeNode *constructTree(int key, treeNode *left, treeNode *right);

@@ -1,5 +1,28 @@
 #include "functions.h"
 
+//Construct a node on the stack
+listNode *constructNode(treeNode *tree) {
+   listNode *node = (listNode *)malloc(sizeof(listNode));
+   if (node = NULL) {
+      fprintf(stderr, "ERROR 01: Memory allocation unsuccessful");
+      return NULL;
+   }
+   
+   //Constructing node
+   node->tree = tree;
+   node->next = NULL;
+   
+   return node;
+}
+
+//Deconstruct a node on the stack
+void deconstructNode(listNode *node) {
+   if (node != NULL) {
+      deconstructTree(node->tree);
+      free(node);
+   }
+}
+
 //Push a node onto the stack
 void push(listNode *head, listNode *node) {
    node->next = head->next;
@@ -25,25 +48,14 @@ int stackSize(listNode *head) {
    return (unsigned long)(head->tree);
 }
 
-//Construct a node on the stack
-listNode *constructNode(treeNode *tree) {
-   listNode *node = (listNode *)malloc(sizeof(listNode));
-   if (node = NULL) {
-      fprintf(stderr, "ERROR 01: Memory allocation unsuccessful");
-      return NULL;
+//Clearing the stack
+void stackFlush(listNode *head) {
+   listNode *curr = head->next;
+   while (curr != NULL) {
+      listNode *temp = curr->next;
+      deconstructNode(curr);
+      curr = temp;
    }
-   
-   //Constructing node
-   node->tree = tree;
-   node->next = NULL;
-   
-   return node;
-}
-
-//Deconstruct a node on the stack
-void nodeDeconstruct(listNode *node) {
-   if (node != NULL) {
-      deconstructTree(node->tree);
-      free(node);
-   }
+   head->next = NULL;
+   head->tree = (treeNode *)0;
 }

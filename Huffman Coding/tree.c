@@ -3,7 +3,7 @@
 //Constructing the root node of a tree
 treeNode *constructTree(int key, treeNode *left, treeNode *right) {
    treeNode *node = (treeNode *)malloc(sizeof(treeNode));
-   if (node = NULL) {
+   if (node == NULL) {
       fprintf(stderr, "tree.c:7 | ERROR 03: Memory allocation unsuccessful");
       return NULL;
    }

@@ -3,7 +3,7 @@
 //Construct a node on the stack
 listNode *constructNode(treeNode *tree) {
    listNode *node = (listNode *)malloc(sizeof(listNode));
-   if (node = NULL) {
+   if (node == NULL) {
       fprintf(stderr, "list.c:7 | ERROR 03: Memory allocation unsuccessful");
       return NULL;
    }
@@ -18,7 +18,7 @@ listNode *constructNode(treeNode *tree) {
 //Deconstruct a node on the stack
 void destructNode(listNode *node) {
    if (node != NULL) {
-      deconstructTree(node->tree);
+      destructTree(node->tree);
       free(node);
    }
 }
@@ -53,7 +53,7 @@ void stackFlush(listNode *head) {
    listNode *curr = head->next;
    while (curr != NULL) {
       listNode *temp = curr->next;
-      deconstructNode(curr);
+      destructNode(curr);
       curr = temp;
    }
    head->next = NULL;

@@ -1,7 +1,7 @@
 #include "functions.h"
 
 //Creating a Huffman Coding Tree from an input file
-treeNode *buildHuffmanTree(FILE *input) {
+treeNode *constructHuffmanTree(FILE *input) {
    //Creating stack
    listNode stack;
    stack.next = NULL;
@@ -20,7 +20,7 @@ treeNode *buildHuffmanTree(FILE *input) {
          treeNode *rightTree = rightNode->tree;
          treeNode *leftTree = leftNode->tree;
          
-         treeNode *tree = constructTree(ASCII_COUNT, leftNode, rightNode);
+         treeNode *tree = constructTree(ASCII_COUNT, leftTree, rightTree);
          
          if (tree == NULL) {
             destructNode(leftNode);
@@ -45,7 +45,7 @@ treeNode *buildHuffmanTree(FILE *input) {
             break;
          }
          
-         listNode *stackNode = nodeConstruct(tree);
+         listNode *stackNode = constructNode(tree);
          if (stackNode == NULL) {
             token = EXCEPTION;
             break;
@@ -54,7 +54,7 @@ treeNode *buildHuffmanTree(FILE *input) {
    }
    
    if (token == '0' && stackSize(&stack) == 1) {
-      treeNode *node = pop(&stack);
+      listNode *node = pop(&stack);
       treeNode *huffman = node->tree;
       free(node);
       return huffman;

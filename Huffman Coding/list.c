@@ -16,7 +16,7 @@ listNode *constructNode(treeNode *tree) {
 }
 
 //Deconstruct a node on the stack
-void deconstructNode(listNode *node) {
+void destructNode(listNode *node) {
    if (node != NULL) {
       deconstructTree(node->tree);
       free(node);

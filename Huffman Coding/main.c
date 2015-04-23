@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
    }
    
    //Save the huffman tree into a file
-   char *code = (char *)calloc(50, sizeof(char));
+   char *code = (char *)calloc(ASCII_COUNT, sizeof(char));
    postOrderPrint(huffman, output, code);
    
    //Deallocate all memory used

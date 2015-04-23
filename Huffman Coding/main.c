@@ -33,7 +33,8 @@ int main(int argc, char **argv) {
    }
    
    //Save the huffman tree into a file
-   postOrderPrint(huffman, output);
+   char *code = (char *)malloc(sizeof(char) * 50);
+   postOrderPrint(huffman, output, code);
    
    //Output file is not needed after printing
    fclose(output);

@@ -72,15 +72,17 @@ treeNode *constructHuffmanTree(FILE *input) {
 }
 
 //Post order print of the Huffman Coding tree
-void postOrderPrint(treeNode *node, FILE *output) {
+void postOrderPrint(treeNode *node, FILE *output, char *code) {
    if (node == NULL)
       return;
    
    if (isLeaf(node)) {
-      fprintf(output, "1%c", node->value);
+      fprintf(output, "%c:%s\n", node->value, code);
       return;
    }
-   postOrderPrint(node->left, output);
-   postOrderPrint(node->right, output);
-   fprintf(output, "0");
+   //fprintf(output, "%c:%s\n", node->value, code);
+   postOrderPrint(node->left, output, strcat(code,"0"));
+   code[strlen(code) - 1] = '\0';
+   postOrderPrint(node->right, output, strcat(code,"1"));
+   code[strlen(code) - 1] = '\0';
 }

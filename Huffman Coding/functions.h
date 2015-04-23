@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -34,4 +35,4 @@ int isLeaf(treeNode *node);
 
 //main function declarations
 treeNode *constructHuffmanTree(FILE *input);
-void postOrderPrint(treeNode *node, FILE *output);
+void postOrderPrint(treeNode *node, FILE *output, char *code);

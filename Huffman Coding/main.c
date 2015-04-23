@@ -32,15 +32,10 @@ int main(int argc, char **argv) {
    }
    
    //Save the huffman tree into a file
-   char *code = (char *)malloc(sizeof(char) * 50);
+   char *code = (char *)calloc(50, sizeof(char));
    postOrderPrint(huffman, output, code);
-   if (output == NULL) {
-      free(code);
-      destructTree(huffman);
-      fclose(output);
-      fprintf(stderr, "main.c:36 | ERROR 05: Output file could not be opened or created");
-      return EXIT_FAILURE;
-   }
+   
+   //Deallocate all memory used
    destructTree(huffman);
    free(code);
    //Output file is not needed after printing

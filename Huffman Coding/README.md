@@ -1,3 +1,5 @@
+**Works only for character based files
+
 Errors:
 * 01: Incorrect number of input arguments
 * 02: Input file could not be opened

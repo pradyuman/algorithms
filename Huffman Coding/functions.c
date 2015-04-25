@@ -79,7 +79,7 @@ int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output) {
    while (count > 0) {
       int decoded = decodeChar(huffman, input);
       
-      if (decoded != -1) {
+      if (decoded != EXCEPTION) {
          fputc(decoded, output);
          count--;
       } else
@@ -96,17 +96,20 @@ int decodeChar(treeNode* tree, FILE* input) {
    if (isLeaf(tree))
       return tree->value;
    
+   //Static int to keep the value in this scope through the recursion calls
    static int inputChar = 0;
-   static int position = -1;
+   static int position = EXCEPTION;
    
    if (position < 0) {
       inputChar = fgetc(input);
+      //if at EOF, then return
       if (inputChar == EOF)
-         return -1;
+         return EXCEPTION;
       
       position = 7;
    }
    
+   //masking the bits so that
    int mask = 1 << position--;
    
    int token = mask & inputChar;

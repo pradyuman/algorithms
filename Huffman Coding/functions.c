@@ -71,6 +71,7 @@ treeNode *constructHuffmanTree(FILE *input) {
    return NULL;
 }
 
+//decoding an input file
 int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output) {
    int count; //character count
    if(fread(&count, sizeof(int), 1, input) != 1)
@@ -90,9 +91,11 @@ int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output) {
    return count != 0 ? 0 : 1;
 }
 
+//decoding a character from the huffman tree
 int decodeChar(treeNode* tree, FILE* input) {
    if (tree == NULL)
       return -1;
+   //return the node value if the node is a leaf
    if (isLeaf(tree))
       return tree->value;
    
@@ -109,9 +112,8 @@ int decodeChar(treeNode* tree, FILE* input) {
       position = 7;
    }
    
-   //masking the bits so that
+   //masking the byte so that we are reading only one bit at a time
    int mask = 1 << position--;
-   
    int token = mask & inputChar;
    
    //if token is 0, return left node of tree, otherwise return right node

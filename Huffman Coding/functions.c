@@ -71,6 +71,10 @@ treeNode *constructHuffmanTree(FILE *input) {
    return NULL;
 }
 
+int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output) {
+   
+}
+
 //Post order print of the Huffman Coding tree
 void postOrderPrint(treeNode *node, FILE *output, char *code) {
    if (node == NULL)

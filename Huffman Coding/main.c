@@ -21,55 +21,56 @@ int main(int argc, char **argv) {
       fclose(input);
       
       if (huffman == NULL) {
-         fprintf(stderr, "main.c:18 | ERROR 04: Huffman tree could not be created");
+         fprintf(stderr, "main.c:19 | ERROR 04: Huffman tree could not be created");
          return EXIT_FAILURE;
       }
       
       //Opening output file
       FILE *output = fopen(argv[2], "w");
       if (output == NULL) {
-         fprintf(stderr, "main.c:28 | ERROR 05: Output file could not be opened or created");
+         fprintf(stderr, "main.c:29 | ERROR 05: Output file could not be opened or created");
          return EXIT_FAILURE;
       }
       
       //Save the huffman tree into a file
       char *code = (char *)calloc(ASCII_COUNT, sizeof(char));
       postOrderPrint(huffman, output, code);
+      
+      
+      //Deallocate all memory used
+      destructTree(huffman);
+      free(code);
+      //Output file is not needed after printing
+      fclose(output);
    
    }
    else if (strcmp(argv[1],"-d") == 0) {
-      //Creating a huffman tree
-      int flag = decodeHuffmanTree(input);
-      //Input file is not needed after tree is contructed
-      fclose(input);
-      
-      if (flag == 0) {
-         fprintf(stderr, "main.c:42 | ERROR 09: Input file could not be decoded");
-         return EXIT_FAILURE;
-      }
-      
       //Opening output file
       FILE *output = fopen(argv[2], "w");
       if (output == NULL) {
-         fprintf(stderr, "main.c:28 | ERROR 05: Output file could not be opened or created");
+         fclose(input);
+         fprintf(stderr, "main.c:49 | ERROR 05: Output file could not be opened or created");
          return EXIT_FAILURE;
       }
       
-      //Save the huffman tree into a file
-      char *code = (char *)calloc(ASCII_COUNT, sizeof(char));
-      postOrderPrint(huffman, output, code);
+      //Decoding input file
+      int flag = decodeHuffmanTree(huffman, input, output);
+      //Input file is not needed after decoding
+      fclose(input);
+      //Outputt file is not needed after decoding
+      fclose(output);
+      
+      if (flag == 0) {
+         fprintf(stderr, "main.c:57 | ERROR 09: Input file could not be decoded");
+         return EXIT_FAILURE;
+      }
+      
    }
    else {
       fclose(input);
-      fprintf(stderr, "main.c:63 | ERROR 08: Input flag is not valid");
+      fprintf(stderr, "main.c:71 | ERROR 08: Input flag is not valid");
       return EXIT_FAILURE;
    }
-   
-   //Deallocate all memory used
-   destructTree(huffman);
-   free(code);
-   //Output file is not needed after printing
-   fclose(output);
    
    return EXIT_SUCCESS;
 }

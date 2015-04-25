@@ -72,10 +72,22 @@ treeNode *constructHuffmanTree(FILE *input) {
 }
 
 int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output) {
-   int count;
+   int count; //character count
    if(fread(&count, sizeof(int), 1, input) != 1)
       return 0;
    
+   while (count > 0) {
+      int decoded = decodeChar(huffman, input);
+      
+      if (decoded != -1) {
+         fputc(decoded, output);
+         count--;
+      } else
+         break;
+   }
+   
+   //if count is zero, return 1 (otherwise return 0)
+   return count != 0 ? 0 : 1;
 }
 
 //Post order print of the Huffman Coding tree

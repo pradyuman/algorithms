@@ -1,5 +1,5 @@
 make: tree.o list.o functions.o main.o
-	gcc tree.o list.o functions.o main.o -o pe09
+	gcc tree.o list.o functions.o main.o -o pe10
 tree.o: tree.c
 	gcc tree.c -c
 list.o: list.c

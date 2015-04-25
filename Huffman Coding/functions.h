@@ -35,6 +35,6 @@ int isLeaf(treeNode *node);
 
 //main function declarations
 treeNode *constructHuffmanTree(FILE *input);
-int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output)
+int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output);
 int decodeChar(treeNode* tree, FILE* input);
 void postOrderPrint(treeNode *node, FILE *output, char *code);

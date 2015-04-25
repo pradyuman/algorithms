@@ -7,13 +7,13 @@ int main(int argc, char **argv) {
       return EXIT_FAILURE;
    }
    
-   if (strcmp(argv[1],"-p") != 0 || strcmp(argv[1],"-d") != 0) {
+   if (strcmp(argv[1],"-p") != 0 && strcmp(argv[1],"-d") != 0) {
       fprintf(stderr, "main.c:10 | ERROR 08: Input flag is not valid");
       return EXIT_FAILURE;
    }
    
    //Opening input file
-   FILE *input = fopen(argv[1], "r");
+   FILE *input = fopen(argv[2], "r");
    if (input == NULL) {
       fprintf(stderr, "main.c:16 | ERROR 02: Input file could not be opened");
       return EXIT_FAILURE;
@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
    }
    
    //Opening output file
-   FILE *output = fopen(argv[2], "w");
+   FILE *output = fopen(argv[3], "w");
    if (output == NULL) {
       fprintf(stderr, "main.c:30 | ERROR 05: Output file could not be opened or created");
       return EXIT_FAILURE;
@@ -66,6 +66,7 @@ int main(int argc, char **argv) {
       if (flag == 0) {
          fprintf(stderr, "main.c:58 | ERROR 09: Input file could not be decoded");
          return EXIT_FAILURE;
+      }
    }
    
    return EXIT_SUCCESS;

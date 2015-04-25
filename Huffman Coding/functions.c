@@ -72,6 +72,9 @@ treeNode *constructHuffmanTree(FILE *input) {
 }
 
 int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output) {
+   int count;
+   if(fread(&count, sizeof(int), 1, input) != 1)
+      return 0;
    
 }
 

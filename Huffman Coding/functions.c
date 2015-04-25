@@ -90,6 +90,31 @@ int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output) {
    return count != 0 ? 0 : 1;
 }
 
+int decodeChar(treeNode* tree, FILE* input) {
+   if (tree == NULL)
+      return -1;
+   if (isLeaf(tree))
+      return tree->value;
+   
+   static int inputChar = 0;
+   static int position = -1;
+   
+   if (position < 0) {
+      inputChar = fgetc(input);
+      if (inputChar == EOF)
+         return -1;
+      
+      position = 7;
+   }
+   
+   int mask = 1 << position--;
+   
+   int token = mask & inputChar;
+   
+   //if token is 0, return left node of tree, otherwise return right node
+   return decodeChar(token == 0 ? tree->left : tree->right, input);
+}
+
 //Post order print of the Huffman Coding tree
 void postOrderPrint(treeNode *node, FILE *output, char *code) {
    if (node == NULL)

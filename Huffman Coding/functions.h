@@ -6,6 +6,8 @@
 #define FALSE 0
 #define EXCEPTION -1
 #define ASCII_COUNT 256
+#define BIT 2
+#define CHAR 3
 
 //structure for a tree node
 typedef struct _treeNode {
@@ -34,7 +36,7 @@ void destructTree(treeNode *node);
 int isLeaf(treeNode *node);
 
 //main function declarations
-treeNode *constructHuffmanTree(FILE *input);
+treeNode *constructHuffmanTree(FILE *input, int version);
 int decodeHuffmanTree(treeNode* huffman, FILE* input, FILE* output);
 int decodeChar(treeNode* tree, FILE* input);
 void postOrderPrint(treeNode *node, FILE *output, char *code);

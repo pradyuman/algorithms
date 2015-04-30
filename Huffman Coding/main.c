@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
       return EXIT_FAILURE;
    }
    
-   if (strcmp(argv[1],"-p") != 0 && strcmp(argv[1],"-d") != 0) {
+   if (strcmp(argv[1],"-p") != 0 && strcmp(argv[1],"-c") != 0 && strcmp(argv[1],"-b") != 0) {
       fprintf(stderr, "main.c:10 | ERROR 08: Input flag is not valid");
       return EXIT_FAILURE;
    }
@@ -20,7 +20,13 @@ int main(int argc, char **argv) {
    }
    
    //Creating a huffman tree
-   treeNode *huffman = constructHuffmanTree(input);
+   int version;
+   if(strcmp(argv[1],"-c"))
+      version = CHAR;
+   else if(strcmp(argv[1],"-b"))
+      version = BIT;
+      
+   treeNode *huffman = constructHuffmanTree(input, version);
    if (huffman == NULL) {
       fprintf(stderr, "main.c:23 | ERROR 04: Huffman tree could not be created");
       return EXIT_FAILURE;
@@ -33,7 +39,7 @@ int main(int argc, char **argv) {
       return EXIT_FAILURE;
    }
    
-   if (strcmp(argv[1],"-p") == 0) {
+   if (strcmp(argv[1],"-p")) {
       //Input file is not needed after tree is contructed
       fclose(input);
       //Save the huffman tree into a file

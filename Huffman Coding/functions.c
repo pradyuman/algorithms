@@ -1,15 +1,24 @@
 #include "functions.h"
 
 //Creating a Huffman Coding Tree from an input file
-treeNode *constructHuffmanTree(FILE *input) {
+treeNode *constructHuffmanTree(FILE *input, int version) {
    //Creating stack
    listNode stack;
    stack.next = NULL;
    stack.tree = (treeNode *)0;
    
    int token;
+   int pos;
+   if (version==BIT) pos = -1; //version = BIT means that it is bit-based header
    
    while ((token = fgetc(input)) != EOF) {
+      if(version == BIT) {
+         pos = pos < 0 ? 7:pos;
+         int mask = 1 << pos--;
+         
+         token = (token & mask) == 0 ? '0' : '1';
+      }
+      
       if (token == '0') {
          if (stackSize(&stack) <= 1)
             break;

@@ -9,13 +9,16 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
    
    int token;
    int pos;
+   int mask;
+   int readChar;
+   
    if (version==BIT) pos = -1; //version = BIT means that it is bit-based header
    
    while ((token = fgetc(input)) != EOF) {
-      if(version == BIT) {
+      if (version == BIT) {
          pos = pos < 0 ? 7:pos;
          int mask = 1 << pos--;
-         
+         int readChar = token;
          token = (token & mask) == 0 ? '0' : '1';
       }
       
@@ -45,7 +48,26 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
          free(leftNode);
       }
       else if (token == '1') {
-         token = fgetc(input);
+         if (version == BIT) {
+            if (pos<0) {
+               token = fgetc(input);
+               if (token == EOF)
+                  break;
+            } else {
+               mask = 0xFF >> (7 - pos);
+               token = (readChar & mask) << (7-pos);
+               readChar = fgetc(input);
+               if(readChar == EOF) {
+                  token = EOF;
+                  break;
+               }
+               
+               token |= readChar >> (pos + 1); 
+            }   
+         } else {
+            token = fgetc(input);
+         }
+         
          if (token == EOF)
             break;
          

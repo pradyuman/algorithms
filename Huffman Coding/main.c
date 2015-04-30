@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
    treeNode *huffman = constructHuffmanTree(input, version);
    if (huffman == NULL) {
       fprintf(stderr, "main.c:23 | ERROR 04: Huffman tree could not be created");
+      fclose(input);
       return EXIT_FAILURE;
    }
    
@@ -36,6 +37,7 @@ int main(int argc, char **argv) {
    FILE *output = fopen(argv[3], "w");
    if (output == NULL) {
       fprintf(stderr, "main.c:30 | ERROR 05: Output file could not be opened or created");
+      fclose(input);      
       return EXIT_FAILURE;
    }
    

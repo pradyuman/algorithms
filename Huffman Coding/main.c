@@ -21,9 +21,9 @@ int main(int argc, char **argv) {
    
    //Creating a huffman tree
    int version;
-   if(strcmp(argv[1],"-pc") || strcmp(argv[1], "-dc"))
+   if(strcmp(argv[1],"-pc") == 0 || strcmp(argv[1], "-dc") == 0)
       version = CHAR;
-   else if(strcmp(argv[1],"-pb") || strcmp(argv[1],"-db"))
+   else
       version = BIT;
       
    treeNode *huffman = constructHuffmanTree(input, version);
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
       return EXIT_FAILURE;
    }
    
-   if (strcmp(argv[1],"-pc") || strcmp(argv[1], "-pb")) {
+   if (strcmp(argv[1],"-pc") == 0 || strcmp(argv[1], "-pb") == 0) {
       //Input file is not needed after tree is contructed
       fclose(input);
       //Save the huffman tree into a file

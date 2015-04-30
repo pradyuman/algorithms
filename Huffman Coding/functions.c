@@ -11,19 +11,22 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
    int pos = -1;
    int readChar = 0;
    
-   while ((token = fgetc(input)) != EOF) {
-     if (pos < 0 && version == BIT) {
-         readChar = token;
-         if (readChar == EOF) {
-            token = EXCEPTION;
-            break;
-         }
-         pos = 7;
-      }
-      if (version == BIT) {
-         int mask = 1 << pos--;
-         token = (readChar & mask) == 0 ? '0' : '1';
-      }
+   while (TRUE) {
+     if (version == BIT) {
+        if (pos < 0) {
+           readChar = fgetc(input);
+           if (readChar == EOF) {
+              token = EXCEPTION;
+              break;
+           }
+           pos = 7;
+        }
+        
+        int mask = 1 << pos--;
+        token = (readChar & mask) == 0 ? '0' : '1';
+     } else {
+        token = fgetc(input);
+     }
       
       if (token == '0') {
          if (stackSize(&stack) <= 1)
@@ -51,14 +54,14 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
          free(leftNode);
       }
       else if (token == '1') {
-        /* if (version == BIT) {
-            if (pos<0) {
+         if (version == BIT) {
+            if (pos < 0) {
                token = fgetc(input);
                if (token == EOF)
                   break;
             } else {
                int mask = 0xFF >> (7 - pos);
-               token = (readChar & mask) << (7-pos);
+               token = (readChar & mask) << (7 - pos);
                readChar = fgetc(input);
                if(readChar == EOF) {
                   token = EOF;
@@ -67,9 +70,9 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
                
                token |= readChar >> (pos + 1); 
             }   
-         } else {*/
+         } else {
             token = fgetc(input);
-         //}
+         }
          
          if (token == EOF)
             break;

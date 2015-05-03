@@ -4,7 +4,7 @@
 treeNode *constructTree(int key, treeNode *left, treeNode *right) {
    treeNode *node = (treeNode *)malloc(sizeof(treeNode));
    if (node == NULL) {
-      fprintf(stderr, "tree.c:7 | ERROR 03: Memory allocation unsuccessful");
+      fprintf(stderr, "tree.c:5 | ERROR 03: Memory allocation unsuccessful");
       return NULL;
    }
    

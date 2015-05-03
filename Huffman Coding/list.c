@@ -4,7 +4,7 @@
 listNode *constructNode(treeNode *tree) {
    listNode *node = (listNode *)malloc(sizeof(listNode));
    if (node == NULL) {
-      fprintf(stderr, "list.c:7 | ERROR 03: Memory allocation unsuccessful");
+      fprintf(stderr, "list.c:5 | ERROR 03: Memory allocation unsuccessful");
       return NULL;
    }
    

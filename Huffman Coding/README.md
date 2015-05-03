@@ -1,4 +1,4 @@
-**Works only for character based files
+This program performs various Huffman Coding operations to compress and decompress character and binary based files.
 
 Errors:
 * 01: Incorrect number of input arguments

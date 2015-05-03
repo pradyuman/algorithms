@@ -41,7 +41,7 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
          treeNode *tree = constructTree(ASCII_COUNT, leftTree, rightTree);
          
          if (tree == NULL) {
-            fprintf(stderr, "functions.c:26 | ERROR 06: Tree could not be constructed");
+            fprintf(stderr, "functions.c:41 | ERROR 06: Tree could not be constructed");
             destructNode(leftNode);
             destructNode(rightNode);
             token = EXCEPTION;
@@ -79,14 +79,14 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
          
          treeNode *tree = constructTree(token, NULL, NULL);
          if (tree == NULL) {
-            fprintf(stderr, "functions.c:45 | ERROR 06: Tree could not be constructed");
+            fprintf(stderr, "functions.c:80 | ERROR 06: Tree could not be constructed");
             token = EXCEPTION;
             break;
          }
          
          listNode *stackNode = constructNode(tree);
          if (stackNode == NULL) {
-            fprintf(stderr, "functions.c:26 | ERROR 07: List node could not be constructed");
+            fprintf(stderr, "functions.c:87 | ERROR 07: List node could not be constructed");
             destructTree(tree);
             token = EXCEPTION;
             break;

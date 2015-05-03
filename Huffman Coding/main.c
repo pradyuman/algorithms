@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
    //Opening input file
    FILE *input = fopen(argv[2], "r");
    if (input == NULL) {
-      fprintf(stderr, "main.c:16 | ERROR 02: Input file could not be opened");
+      fprintf(stderr, "main.c:17 | ERROR 02: Input file could not be opened");
       return EXIT_FAILURE;
    }
    
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
       
    treeNode *huffman = constructHuffmanTree(input, version);
    if (huffman == NULL) {
-      fprintf(stderr, "main.c:23 | ERROR 04: Huffman tree could not be created");
+      fprintf(stderr, "main.c:29 | ERROR 04: Huffman tree could not be created");
       fclose(input);
       return EXIT_FAILURE;
    }
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
    //Opening output file
    FILE *output = fopen(argv[3], "w");
    if (output == NULL) {
-      fprintf(stderr, "main.c:30 | ERROR 05: Output file could not be opened or created");
+      fprintf(stderr, "main.c:37 | ERROR 05: Output file could not be opened or created");
       fclose(input);      
       return EXIT_FAILURE;
    }
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
          destructTree(huffman);
          //Output file is not needed
          fclose(output);
-         fprintf(stderr, "main.c:40 | ERROR 03: Memory allocation unsuccessful");
+         fprintf(stderr, "main.c:48 | ERROR 03: Memory allocation unsuccessful");
          return EXIT_FAILURE;
       }
       postOrderPrint(huffman, output, code);
@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
       destructTree(huffman);
       
       if (flag == 0) {
-         fprintf(stderr, "main.c:58 | ERROR 09: Input file could not be decoded");
+         fprintf(stderr, "main.c:66 | ERROR 09: Input file could not be decoded");
          return EXIT_FAILURE;
       }
    }

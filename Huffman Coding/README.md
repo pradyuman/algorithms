@@ -9,6 +9,8 @@ Usage: run `make` in the command line and then call `./huffman` with the followi
 
 Some sample files with character-based or bit-based headers are included in the *sample* folder.
 
+To clean your directory, run `make clean`. This will remove all object files from your directory.
+
 Errors:
 * 01: Incorrect number of input arguments
 * 02: Input file could not be opened

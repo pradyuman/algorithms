@@ -10,4 +10,4 @@ main.o: main.c
 	gcc main.c -c
 
 clean:
-	rm -f *.o core
+	rm -f *.o huffman

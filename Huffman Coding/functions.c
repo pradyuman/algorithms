@@ -8,26 +8,33 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
    stack.tree = (treeNode *)0;
    
    int token;
-   int pos = -1;
+   int pos = EXCEPTION;
    int readChar = 0;
    
    while (TRUE) {
-     if (version == BIT) {
-        if (pos < 0) {
-           readChar = fgetc(input);
-           if (readChar == EOF) {
-              token = EXCEPTION;
-              break;
-           }
-           pos = 7;
+      //file has a bit based header
+      if (version == BIT) {
+         if (pos < 0) {
+            //get first character from input file
+            readChar = fgetc(input);
+            if (readChar == EOF) {
+               token = EXCEPTION;
+               break;
+            }
+            //set position to most significant bit of a byte
+            pos = 7;
         }
         
-        int mask = 1 << pos--;
-        token = (readChar & mask) == 0 ? '0' : '1';
-     } else {
-        token = fgetc(input);
-     }
+         //create a mask that will isolate one bit at a time
+         int mask = 1 << pos--;
+         //create a token from readChar and the mask
+         token = (readChar & mask) == 0 ? '0' : '1';
+      //otherwise the file has a character based header
+      } else {
+         token = fgetc(input);
+      }
       
+      //if the token is a 'zero' character, pop the left/right nodes from the stack and add them to the tree
       if (token == '0') {
          if (stackSize(&stack) <= 1)
             break;
@@ -41,25 +48,31 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
          treeNode *tree = constructTree(ASCII_COUNT, leftTree, rightTree);
          
          if (tree == NULL) {
-            fprintf(stderr, "functions.c:41 | ERROR 06: Tree could not be constructed");
+            fprintf(stderr, "functions.c:48 | ERROR 06: Tree could not be constructed");
             destructNode(leftNode);
             destructNode(rightNode);
             token = EXCEPTION;
             break;
          }
          
+         //reusing rightNode
          rightNode->tree = tree;
          rightNode->next = NULL;
+         //pushing the new tree to the stack
          push(&stack, rightNode);
          free(leftNode);
       }
+      //If the token is a 'one' character, construct a tree using the token and push it onto the stack
       else if (token == '1') {
+         //if the file is a bit based header, need to do some more processing
          if (version == BIT) {
             if (pos < 0) {
+               //get a new character from the file
                token = fgetc(input);
                if (token == EOF)
                   break;
             } else {
+               //doing some processing because the information we want might be split between two different bytes
                int mask = 0xFF >> (7 - pos);
                token = (readChar & mask) << (7 - pos);
                readChar = fgetc(input);
@@ -79,18 +92,20 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
          
          treeNode *tree = constructTree(token, NULL, NULL);
          if (tree == NULL) {
-            fprintf(stderr, "functions.c:80 | ERROR 06: Tree could not be constructed");
+            fprintf(stderr, "functions.c:93 | ERROR 06: Tree could not be constructed");
             token = EXCEPTION;
             break;
          }
          
          listNode *stackNode = constructNode(tree);
          if (stackNode == NULL) {
-            fprintf(stderr, "functions.c:87 | ERROR 07: List node could not be constructed");
+            fprintf(stderr, "functions.c:100 | ERROR 07: List node could not be constructed");
             destructTree(tree);
             token = EXCEPTION;
             break;
          }
+         
+         //pushing onto the stack
          push(&stack, stackNode);
       }
       else
@@ -104,6 +119,7 @@ treeNode *constructHuffmanTree(FILE *input, int version) {
       return huffman;
    }
    
+   //flushing the stack if there was an exception
    stackFlush(&stack);
    return NULL;
 }

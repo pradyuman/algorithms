@@ -222,7 +222,7 @@ double Deviation_from_identity(double **matrix, int size)
    
    for(i = 0; i < size; i++){
       for (j = 0; j < size; j++) {
-         sum += abs(matrix[i][j] - identity[i][j]);
+         sum += fabs(matrix[i][j] - identity[i][j]);
       }
    }
    

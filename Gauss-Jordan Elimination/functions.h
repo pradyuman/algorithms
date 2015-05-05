@@ -1,3 +1,5 @@
+#include <math.h>
+
 #ifndef PA_ANSWER03_H
 #define PA_ANSWER03_H
 

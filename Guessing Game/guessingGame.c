@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-include "functions.h" //Function declarations
+#include "functions.h" //Function declarations
 
 //Main
 int main(int argc, char * argv[]){

@@ -15,4 +15,8 @@ frequency* make_condensed_table(frequency* freq, int* size);
 //Sorts the frequency table from lowest to highest frequency
 void sort_table(frequency *table, int size);
 //Build Huffman Tree
-void construct_huffman_tree(frequency* table, frequency* tree, int size);
+int construct_huffman_tree(frequency* table, frequency* tree, int size);
+//Get huffman codes
+void build_code_table(frequency* root, int codes[256], int code);
+//Compress file
+void compress(FILE* input, FILE* output, int codes[256]);

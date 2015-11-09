@@ -31,15 +31,36 @@ int main(int argc, char** argv) {
 
   //Create Huffman Tree
   frequency huffman[1028] = {{0}};
-  construct_huffman_tree(table, huffman, size);
+  int iroot = construct_huffman_tree(table, huffman, size);
+  frequency* root = &huffman[iroot];
+  //printf("%d", root);
+  //Create output file
+  char * ofilename = malloc(strlen(argv[1]) + 6); //sizeof(char) = 1 - +6 for .huff and \0
+  strcpy(ofilename, argv[1]); strcat(ofilename, ".huff");
+  FILE *output = fopen(ofilename, "wb");
+  free(ofilename);
 
-  int i = 0;
+  //Build table of codes
+  int codes[256]; //second half of codes stores depth
+  build_code_table(root, codes, 0);
+ /* int i = 0;
+  for(i = 0; i<size; i++){
+    printf("%c: %d", table[i].c, codes[table[i].c]);
+  }*/
+  printf("\n");
+  compress(input, output, codes);
+  /*int i = 0;
   for(i=0; i<size; i++)
     printf("%d: %lu\n", table[i].c, table[i].f);
-  for(i=0; huffman[i].f != 0; i++)
-    printf("%d: %lu | left: %lu right: %lu\n", i, huffman[i].f, huffman[i].left->f, huffman[i].right->f);
-
+  for(i=0; i <= root; i++){
+    printf("%d: %lu | left: %lu right: %lu ", i, huffman[i].f, huffman[i].left->f, huffman[i].right->f);
+    if(huffman[i].left->c != INT_MAX) printf("left_char: %c ", huffman[i].left->c);
+    if(huffman[i].right->c != INT_MAX) printf("right_schar: %c ", huffman[i].right->c);
+    printf("\n");
+  }*/
   free(table);
+  fclose(input);
+  fclose(output);
   return 0;
 }
 
@@ -87,7 +108,7 @@ void sort_table(frequency *table, int size) {
   }
 }
 
-void construct_huffman_tree(frequency* table, frequency* tree, int size) {
+int construct_huffman_tree(frequency* table, frequency* tree, int size) {
   //frequency *queue = calloc(size, sizeof(frequency));
   frequency *temp;
   int i=0;
@@ -121,4 +142,54 @@ void construct_huffman_tree(frequency* table, frequency* tree, int size) {
     temp->f = temp->left->f + temp->right->f;
     temp->c = INT_MAX;
   }
+
+  return p;
+}
+
+void build_code_table(frequency* node, int codes[256], int code) {
+  //At leaf, store the code and depth
+  if(node->left == NULL || node->right == NULL) {
+    codes[node->c] = code;
+  } else {
+    build_code_table(node->left, codes, code*10 + 1);
+    build_code_table(node->right, codes, code*10 + 2);
+  }
+}
+
+void compress(FILE* input, FILE* output, int codes[256]) {
+  char bit, c;
+  char temp = 0; //temp character to be put into file
+  int code, length;
+  int left = 8; //# of bits left
+  int orig = 0, compressed = 0;
+  int i;
+  fseek(input, 0, SEEK_SET);
+  while((c=fgetc(input)) != EOF) {
+    orig++;
+    i = codes[(int)c];
+    length = 0;
+    while(i!=0){
+      i /= 10;
+      length++;
+    }
+    code = codes[(int)c];
+    while(length--) {
+      compressed++;
+      bit = code % 10 - 1; code /= 10; //do the arithmetic to get proper bit
+      temp |= bit;
+      left--;
+      if(!left){
+        fputc(temp, output);
+        temp = 0; //reset temp
+        left = 8; //reset bits left
+      }
+      temp <<= 1;
+    }
+  }
+
+  if(left != 8) { //fill in last bit with padding
+    temp <<= left - 1;
+    fputc(temp, output);
+  }
+  printf("orig = %d, compressed = %d, saved %f", orig*8, compressed, ((float)compressed/(orig*8)));
 }
